@@ -2,36 +2,36 @@
 #define CONSTANT_H
 #include <QTextEdit>
 #include "Objects/autonomousguiobject.h"
+
 class Constant : public QTextEdit
 {
 public:
+	enum Type
+	{
+		INT,
+		DOUBLE,
+		STATE
+	};
 
-    enum Type{
-        INT,
-        DOUBLE,
-        STATE
-    };
-    enum Location{
-        TOP,
-        LEFT
-    };
+	enum Location
+	{
+		TOP,
+		LEFT
+	};
 
-    Constant(AutonomousGuiObject *parent, Type type, Location location);
-    bool canBeAdded();
-    std::string getValue();
-    Type type;
-    void setLine(QGraphicsLineItem* line);
-    QGraphicsLineItem* getLine();
+	Constant(AutonomousGuiObject* parent, Type type, Location location);
+	bool canBeAdded();
+	std::string getValue();
+	Type type;
+	void setLine(QGraphicsLineItem* line);
+	QGraphicsLineItem* getLine();
 
 public slots:
-    void resizeBox();
+	void resizeBox();
 
 private:
-    QGraphicsLineItem * line;
-
-
-
-
+	QGraphicsLineItem* line;
 };
 
 #endif // CONSTANT_H
+

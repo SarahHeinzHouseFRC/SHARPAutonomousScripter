@@ -2,96 +2,81 @@
 
 AutonomousGuiObject::AutonomousGuiObject()
 {
-    shouldRemove = false;
-
+	shouldRemove = false;
 }
 
 QRectF AutonomousGuiObject::boundingRect() const
 {
-
-    return QRectF(xCoord,yCoord,pixmap.width(),pixmap.height());
-
+	return QRectF(xCoord, yCoord, pixmap.width(), pixmap.height());
 }
 
 
-void AutonomousGuiObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void AutonomousGuiObject::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+	selected = true;
+	update();
+	setFlags(ItemSendsGeometryChanges);
 
-    selected = true;
-    update();
-    setFlags(ItemSendsGeometryChanges);
-
-   QGraphicsItem::mousePressEvent(event);
-
+	QGraphicsItem::mousePressEvent(event);
 }
 
-void AutonomousGuiObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void AutonomousGuiObject::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-
-    selected = false;
-    //update();
-
+	selected = false;
+	//update();
 
 
-     QGraphicsItem::mouseReleaseEvent(event);
-
+	QGraphicsItem::mouseReleaseEvent(event);
 }
 
 
-void AutonomousGuiObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void AutonomousGuiObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-
-    if(!pixmap.isNull())painter->drawPixmap(xCoord, yCoord, pixmap.width(),pixmap.height(),pixmap);
-
+	if (!pixmap.isNull())painter->drawPixmap(xCoord, yCoord, pixmap.width(), pixmap.height(), pixmap);
 }
 
 void AutonomousGuiObject::setXY(int x, int y)
 {
-
-    this->xCoord = x;
-    this->yCoord = y;
+	this->xCoord = x;
+	this->yCoord = y;
 }
 
 void AutonomousGuiObject::setMoveable()
 {
-   // setFlags(ItemIsMovable);
-
+	// setFlags(ItemIsMovable);
 }
 
 bool AutonomousGuiObject::isSelected()
 {
-
-    return selected;
-
+	return selected;
 }
+
 void AutonomousGuiObject::setNotSelected()
 {
-
-        selected = false;
-
+	selected = false;
 }
-int AutonomousGuiObject::getX(){
 
-    return xCoord;
-
+int AutonomousGuiObject::getX()
+{
+	return xCoord;
 }
-int AutonomousGuiObject::getY(){
 
-    return yCoord;
+int AutonomousGuiObject::getY()
+{
+	return yCoord;
 }
+
 bool AutonomousGuiObject::toBeDeleted()
 {
-
-    return shouldRemove;
+	return shouldRemove;
 }
 
 void AutonomousGuiObject::setToBeDeleted()
 {
-
-    shouldRemove = true;
+	shouldRemove = true;
 }
-void AutonomousGuiObject::setPixmap(std::string pathToPimap){
 
-    this->pixmap.load(QString::fromStdString(pathToPimap));
-
+void AutonomousGuiObject::setPixmap(std::string pathToPimap)
+{
+	this->pixmap.load(QString::fromStdString(pathToPimap));
 }

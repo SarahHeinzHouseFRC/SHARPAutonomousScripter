@@ -1,65 +1,60 @@
 #include "connection.h"
 
-Connection::Connection(Connector * connectionTO, Connector * connectionFROM)
+Connection::Connection(Connector* connectionTO, Connector* connectionFROM)
 {
-    this->connectorTO = connectionTO;
-    this->connectorFROM = connectionFROM;
-    setLine(connectorTO->getX(), connectorTO->getY(), connectorFROM->getX(),connectorFROM->getY());
-    inScene = false;
-    shouldRemove = false;
-
+	this->connectorTO = connectionTO;
+	this->connectorFROM = connectionFROM;
+	setLine(connectorTO->getX(), connectorTO->getY(), connectorFROM->getX(), connectorFROM->getY());
+	inScene = false;
+	shouldRemove = false;
 }
+
 bool Connection::isInScene()
 {
-
-    return inScene;
+	return inScene;
 }
 
 bool Connection::shouldBeRemoved()
 {
-
-    return shouldRemove;
+	return shouldRemove;
 }
 
 void Connection::setInScene()
 {
-    inScene = true;
-}
-void Connection::update(){
-
-    if(connectorTO->toBeDeleted() || connectorFROM->toBeDeleted()){
-        shouldRemove = true;
-    }else if(connectorTO->shouldDeleteConnection() || connectorFROM->shouldDeleteConnection()){
-        printf("Delete called from connection \n");
-        shouldRemove = true;
-        connectorTO->setConnectionDeleted();
-        connectorFROM->setConnectionDeleted();
-    }
-
+	inScene = true;
 }
 
-void Connection::setGraphic(QGraphicsLineItem *graphic)
+void Connection::update()
 {
-
-    this->graphic = graphic;
-
+	if (connectorTO->toBeDeleted() || connectorFROM->toBeDeleted())
+	{
+		shouldRemove = true;
+	}
+	else if (connectorTO->shouldDeleteConnection() || connectorFROM->shouldDeleteConnection())
+	{
+		printf("Delete called from connection \n");
+		shouldRemove = true;
+		connectorTO->setConnectionDeleted();
+		connectorFROM->setConnectionDeleted();
+	}
 }
 
-Connector *Connection::getParentTO()
+void Connection::setGraphic(QGraphicsLineItem* graphic)
 {
-
-    return connectorTO;
+	this->graphic = graphic;
 }
 
-Connector *Connection::getParentFROM()
+Connector* Connection::getParentTO()
 {
-
-    return connectorFROM;
+	return connectorTO;
 }
 
-QGraphicsLineItem *Connection::getGraphic()
+Connector* Connection::getParentFROM()
 {
-    return graphic;
+	return connectorFROM;
 }
 
-
+QGraphicsLineItem* Connection::getGraphic()
+{
+	return graphic;
+}

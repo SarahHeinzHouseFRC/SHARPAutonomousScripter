@@ -9,30 +9,29 @@
 #include <QProgressBar>
 #include "Objects/connection.h"
 #include "Objects/commandblock.h"
+
 class BuildCanvas : public QGraphicsView
 {
 public:
-    BuildCanvas(QWidget* parent, MenuManager *menuManager);
-    void updateCanvas();
-     vector<CommandBlock *> orderConnections();
-     void wipe();
-     void addCommandsToCanvas(vector<CommandBlock *> *commands);
+	BuildCanvas(QWidget* parent, MenuManager* menuManager);
+	void updateCanvas();
+	vector<CommandBlock *> orderConnections();
+	void wipe();
+	void addCommandsToCanvas(vector<CommandBlock *>* commands);
 
-signals:
+	signals:
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent* event);
 
 private:
-    MenuManager *menuManager;
-    vector<Connector*> universalConnectors;
-    vector<Connector* > selectedConnectors;
-    vector<Connection *> activeConnections;
-    vector<CommandBlock *> activeCommands;
-    CommandBlock* autoStart;
-    QTimer *timer;
-
+	MenuManager* menuManager;
+	vector<Connector*> universalConnectors;
+	vector<Connector*> selectedConnectors;
+	vector<Connection *> activeConnections;
+	vector<CommandBlock *> activeCommands;
+	CommandBlock* autoStart;
+	QTimer* timer;
 };
-
-
 #endif // BUILDCANVAS_H
+

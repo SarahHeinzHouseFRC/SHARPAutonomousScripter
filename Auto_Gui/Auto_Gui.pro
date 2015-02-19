@@ -29,7 +29,6 @@ HEADERS += Constant/constant.h \
     Display/dialog.h \
     Display/buildcanvas.h \
     Managers/menumanager.h \
-    Objects/visionobject.h \
     Objects/menuitem.h \
     Objects/connector.h \
     Objects/connection.h \

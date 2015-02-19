@@ -6,9 +6,9 @@ MenuManager::MenuManager()
 
 void MenuManager::updateSelectedItem()
 {
-	int k = 0;
+	auto k = 0;
 	std::reverse(currentMenu->begin(), currentMenu->end());
-	for (int i = 0; i < currentMenu->size(); i++)
+	for (auto i = 0; i < currentMenu->size(); i++)
 	{
 		if (currentMenu->at(i)->isSelected())
 		{

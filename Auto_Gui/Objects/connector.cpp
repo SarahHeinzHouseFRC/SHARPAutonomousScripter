@@ -25,7 +25,7 @@ Connector::Connector(Connector::Location location, Type type, string name)
 	case DOUBLE:
 		this->pathToPixmap = ":/Icons/Resources/doubleConnector.png";
 		break;
-	case SEQUNTIAL:
+	case SEQUENTIAL:
 		if (location == LEFT)
 		{
 			this->pathToPixmap = ":/Icons/Resources/connectorIn.png";
@@ -108,16 +108,16 @@ void Connector::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		// QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
 
 		QMenu myMenu;
-		if (constant == NULL && type != SEQUNTIAL)
+		if (constant == NULL && type != SEQUENTIAL)
 		{
 			myMenu.addAction("Add Constant");
 		}
-		if (constant != NULL && type != SEQUNTIAL)
+		if (constant != NULL && type != SEQUENTIAL)
 		{
 			myMenu.addAction("Remove Constant");
 		}
 		QAction* selectedItem = myMenu.exec(globalPos);
-		if (selectedItem != NULL && this->type != SEQUNTIAL)
+		if (selectedItem != NULL && this->type != SEQUENTIAL)
 		{
 			if (selectedItem->iconText().toStdString() == "Add Constant")
 			{

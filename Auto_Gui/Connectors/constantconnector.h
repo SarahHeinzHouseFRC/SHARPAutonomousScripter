@@ -1,6 +1,7 @@
 #ifndef CONSTANTCONNECTOR_H
 #define CONSTANTCONNECTOR_H
-#include "connector.h"
+#include <Objects/connector.h>
+
 class ConstantConnector:public Connector
 {
 public:

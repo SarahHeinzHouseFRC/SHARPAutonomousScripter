@@ -6,103 +6,106 @@ CommandBlock::CommandBlock(CommandBlock::Type type): AutonomousGuiObject()
 
 	switch (type)
 	{
-	case AUTOSTART:
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		setPixmap(":/Icons/Resources/startAuto.png");
+		case AUTOSTART:
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			setPixmap(":/Icons/Resources/startAuto.png");
 
-		ID = 0;
-		break;
+			ID = 0;
+			break;
 
+		case DRIVEFORWARD:
+			connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Drive Distance"));
+			connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Command Timeout"));
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/Drive GUI.png");
 
-	case DRIVEFORWARD:
-		connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Drive Distance"));
-		connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Command Timeout"));
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/Drive GUI.png");
+			ID = 1;
+			break;
 
-		ID = 1;
-		break;
-	case DRIVEBACKWARD:
-		connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Drive Distance"));
-		connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Command Timeout"));
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
+		case DRIVEBACKWARD:
+			connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Drive Distance"));
+			connectors.push_back(new Connector(Connector::TOP, Connector::DOUBLE, "Command Timeout"));
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
 
-		setPixmap(":/Icons/Resources/driveBack.png");
-		ID = -1;
-		break;
+			setPixmap(":/Icons/Resources/driveBack.png");
+			ID = -1;
+			break;
 
+		case ROTATERIGHT:
+			connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Degree to Rotate"));
+			connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Zero Gyro"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::DOUBLE, "Command Timeout"));
 
-	case ROTATERIGHT:
-		connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Degree to Rotate"));
-		connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Zero Gyro"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::DOUBLE, "Command Timeout"));
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/rotateRight90.png");
+			ID = 2;
+			break;
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/rotateRight90.png");
-		ID = 2;
+		case ROTATELEFT:
+			connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Degree to Rotate"));
+			connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Zero Gyro"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::DOUBLE, "Command Timeout"));
 
-		break;
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/rotateLeft90.png");
+			ID = -2;
+			break;
 
-	case ROTATELEFT:
+		case IDLE:
+			connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Time Out"));
 
-		connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Degree to Rotate"));
-		connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Zero Gyro"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::DOUBLE, "Command Timeout"));
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/Timeout.png");
+			ID = 5;
+			break;
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/rotateLeft90.png");
-		ID = -2;
+		case GRABTOTE:
 
-		break;
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/Arm.png");
 
-	case TIMEOUT:
+			ID = -6;
+			break;
 
-		connectors.push_back(new Connector(Connector::TOP, Connector::INT, "Time Out"));
+		case RELEASETOTE:
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/Timeout.png");
-		ID = 5;
-		break;
-	case GRABTOTE:
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/Arm.png");
+			setPixmap(":/Icons/Resources/releaseArm.png");
+			ID = 6;
+			break;
 
-		ID = -6;
-		break;
-	case RELEASETOTE:
+		case ELEVATORUP:
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
+			connectors.push_back(new Connector(Connector::TOP, Connector::STATE, "Elevator Position"));
 
-		setPixmap(":/Icons/Resources/releaseArm.png");
-		ID = 6;
-		break;
-	case ELEVATORUP:
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/elevatorUp.png");
 
-		connectors.push_back(new Connector(Connector::TOP, Connector::STATE, "Elevator Position"));
+			ID = 7;
+			break;
+		case ELEVATORDOWN:
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/elevatorUp.png");
+			connectors.push_back(new Connector(Connector::TOP, Connector::STATE, "Elevator Position"));
 
-		ID = 7;
-		break;
-	case ELEVATORDOWN:
+			connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUENTIAL, "Sequence To"));
+			connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUENTIAL, "Sequence From"));
+			setPixmap(":/Icons/Resources/elevatorDown.png");
+			ID = -7;
+			break;
 
-		connectors.push_back(new Connector(Connector::TOP, Connector::STATE, "Elevator Position"));
+		case DRIVELEFT: break;
+		case DRIVERIGHT: break;
 
-		connectors.push_back(new Connector(Connector::RIGHT, Connector::SEQUNTIAL, "Sequence To"));
-		connectors.push_back(new Connector(Connector::LEFT, Connector::SEQUNTIAL, "Sequence From"));
-		setPixmap(":/Icons/Resources/elevatorDown.png");
-		ID = -7;
-		break;
+		default: break;
 	}
 	this->type = type;
 }
@@ -110,13 +113,13 @@ CommandBlock::CommandBlock(CommandBlock::Type type): AutonomousGuiObject()
 void CommandBlock::getInputs()
 {
 	commandIO.insert(std::make_pair<std::string, string>("ID", to_string(this->getID())));
-	for (int i = 0; i < connectors.size(); i++)
+	for (auto i = 0; i < connectors.size(); i++)
 	{
-		if (connectors.at(i)->getConstant() != NULL && type != TIMEOUT)
+		if (connectors.at(i)->getConstant() != nullptr && type != IDLE)
 		{
 			commandIO.insert(std::make_pair<std::string, string>(connectors.at(i)->getName(), connectors.at(i)->getValue()));
 		}
-		else if (type == TIMEOUT)
+		else if (type == IDLE)
 		{
 			commandIO.insert(std::make_pair<std::string, string>(connectors.at(i)->getName(), "100"));
 		}
@@ -136,45 +139,47 @@ void CommandBlock::setUpConnectors(int x, int y)
 	l = 0;
 	t = 0;
 	b = 0;
-	for (int i = 0; i < connectors.size(); i++)
+	for (auto i = 0; i < connectors.size(); i++)
 	{
-		Connector* currentConnector = connectors.at(i);
-
+		auto currentConnector = connectors.at(i);
 
 		switch (currentConnector->getLocation())
 		{
-		case Connector::TOP:
+			case Connector::TOP:
 
-			currentConnector->setParentItem(this);
-			currentConnector->setXY(x + 36 * (t), y - 10);
-			t++;
-			break;
-		case Connector::BOTTOM:
-			b++;
+				currentConnector->setParentItem(this);
+				currentConnector->setXY(x + 36 * (t), y - 10);
+				t++;
+				break;
 
-			break;
-		case Connector::LEFT:
-			l++;
-			currentConnector->setParentItem(this);
-			currentConnector->setXY(x - 9, (y + 37 * r));
+			case Connector::BOTTOM:
+				b++;
 
-			if (currentConnector->getType() == Connector::SEQUNTIAL)
-			{
-				leftSequential = currentConnector;
-			}
+				break;
 
-			break;
-		case Connector::RIGHT:
-			r++;
-			currentConnector->setParentItem(this);
-			currentConnector->setXY(x + 45, (y + 37 * r));
+			case Connector::LEFT:
+				l++;
+				currentConnector->setParentItem(this);
+				currentConnector->setXY(x - 9, (y + 37 * r));
 
-			if (currentConnector->getType() == Connector::SEQUNTIAL)
-			{
-				rightSequential = currentConnector;
-			}
+				if (currentConnector->getType() == Connector::SEQUENTIAL)
+				{
+					leftSequential = currentConnector;
+				}
 
-			break;
+				break;
+
+			case Connector::RIGHT:
+				r++;
+				currentConnector->setParentItem(this);
+				currentConnector->setXY(x + 45, (y + 37 * r));
+
+				if (currentConnector->getType() == Connector::SEQUENTIAL)
+				{
+					rightSequential = currentConnector;
+				}
+
+				break;
 		}
 	}
 }
@@ -183,7 +188,7 @@ vector<Connector *>* CommandBlock::getConnectors()
 {
 	if (connectors.size() == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -208,7 +213,7 @@ int CommandBlock::getID()
 
 Connector* CommandBlock::getConnectorByName(string name)
 {
-	for (Connector* connector: connectors)
+	for (auto connector: connectors)
 	{
 		if (connector->getName() == name)
 		{
@@ -230,12 +235,12 @@ void CommandBlock::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		myMenu.addAction("Remove Command");
 		myMenu.addAction("Switch Sequential Connectors");
 
-		QAction* selectedItem = myMenu.exec(globalPos);
-		if (selectedItem != NULL)
+		auto selectedItem = myMenu.exec(globalPos);
+		if (selectedItem != nullptr)
 		{
 			if (selectedItem->iconText().toStdString() == "Remove Command")
 			{
-				for (int i = 0; i < connectors.size(); i++)
+				for (auto i = 0; i < connectors.size(); i++)
 				{
 					connectors.at(i)->setToBeDeleted();
 					connectors.at(i)->setNotSelected();
@@ -245,7 +250,7 @@ void CommandBlock::mousePressEvent(QGraphicsSceneMouseEvent* event)
 			else if (selectedItem->iconText().toStdString() == "Switch Sequential Connectors")
 			{
 				printf("switched");
-				Connector* swap = rightSequential;
+				auto swap = rightSequential;
 				rightSequential = leftSequential;
 				leftSequential = swap;
 

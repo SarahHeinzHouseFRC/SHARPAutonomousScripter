@@ -23,7 +23,7 @@ Constant::Constant(AutonomousGuiObject* parent, Type type, Location location):QT
 	this->setAutoFillBackground(true);
 	this->setFontPointSize(10);
 
-	connect(this,SIGNAL(textChanged()),SLOT(resizeBox()));
+	connect(this, SIGNAL(textChanged()),SLOT(resizeBox()));
 
 	switch (type)
 	{

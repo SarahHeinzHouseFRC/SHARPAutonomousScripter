@@ -8,7 +8,6 @@ Dialog::Dialog(QWidget* parent) :
 	ui(new Ui::Dialog)
 {
 	ui->setupUi(this);
-	//testScene->addItem(new DriveCommand("/home/lucas/Desktop/Auto_Gui/driveForward.png"));
 
 	driveMenuScene = new QGraphicsScene(this);
 	buildScene = new QGraphicsScene(this);
@@ -18,13 +17,6 @@ Dialog::Dialog(QWidget* parent) :
 	buildView->setSceneRect(10, 120, 1000, 340);
 	buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	buildView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-	//ui->driveGraphicsView->setScene(driveMenuScene);
-
-	//buildScene->addItem(new MenuItem("/home/lucas/Desktop/Auto_Gui/driveForward.png", MenuItem::DRIVE));
-
-	//ui->graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
-	//connect(ui->graphicsView,SIGNAL(customContextMenuRequested(const QPoint)),this,SLOT(ShowContextMenu(QPoint)));
 
 	loadGuiElelements();
 
@@ -40,6 +32,27 @@ Dialog::~Dialog()
 
 void Dialog::loadGuiElelements()
 {
+	ifstream fin;
+
+	fin.open("Headers.txt");
+
+	if (!fin)
+	{
+		exit(1);
+	}
+
+	std::string line;
+
+	while (std::getline(fin, line))
+	{
+		keys.push_back(line);
+	}
+
+	foreach(string s, keys)
+	{
+		std::cout << s;
+	}
+
 	driveBlocks.push_back(new MenuItem(":/Icons/Resources/Drive GUI.png", MenuItem::DRIVEFORWARD, ui->driveTab));
 	driveBlocks.push_back(new MenuItem(":/Icons/Resources/driveBack.png", MenuItem::DRIVEBACKWARD, ui->driveTab));
 	driveBlocks.push_back(new MenuItem(":/Icons/Resources/rotateRight90.png", MenuItem::ROTATERIGHT, ui->driveTab));
@@ -85,17 +98,13 @@ void Dialog::updateMenuManager()
 
 void Dialog::on_generateButton_released()
 {
-	;
-
 	int sizeOfKeys = sizeof(keys) / sizeof(keys[0]);
 
 	unordered_multimap<std::string, std::vector<string>*> outPutStuff;
 
 	for (int i = 0; i < sizeOfKeys; i++)
 	{
-		outPutStuff.insert(std::make_pair<string, vector<string>*>
-			(std::string(keys[i]),
-			 new std::vector<string>(sizeOfKeys)));
+		outPutStuff.insert(std::make_pair<string, vector<string>*> (std::string(keys[i]), new std::vector<string>(sizeOfKeys)));
 	}
 
 	vector<unordered_multimap<string, string>*> commandIOVector;
@@ -110,41 +119,12 @@ void Dialog::on_generateButton_released()
 		//ommandCode.push_back(std::to_string(orderedCommands.at(i)->getID()));
 		commandIOVector.push_back(orderedCommands.at(i)->sendOutputs());
 	}
-	csvFile.open("/home/lucas/Desktop/autonomousVariables.csv");
+	csvFile.open("./autonomousVariables.csv");
 
 	sendCommmandCode = boost::algorithm::join(keys, ",");
 	csvFile << sendCommmandCode << endl;
 
-	/* for(int i = 0; i < commandIOVector.size();i++){
-
-            for(int k = 0; k  < sizeof(keys) / sizeof(keys[0]); k++){ 
-                std::unordered_map<std::string,string>::const_iterator place  = currentCommandBlock->find(std::string(keys[k]));
-                std::unordered_map<std::string,vector<string>*>::const_iterator placeVector = outPutStuff.find(std::string(keys[k]));
-                if(place == currentCommandBlock->end()){
-                    placeVector->second->push_back("0");
-                    //printf("%d \n", 0);
-                }else{
-                    placeVector->second->push_back(place->second);
-                }
-            }
-        }
-
-
-        for(int i = 0; i < outPutStuff.size();i++){
-            std::unordered_map<std::string,vector<string>*>::const_iterator place  = outPutStuff.find(std::string(keys[i]));
-            vector<string> outPutString;
-            for(int k = 0; k < place->second->size(); k++){
-                if(place->second->at(k) != ""){
-                outPutString.push_back(place->second->at(k));
-                }
-            }
-
-
-
-       }*/
-
-
-	for (int i = 0; i < commandIOVector.size(); i++)
+	for (auto i = 0; i < commandIOVector.size(); i++)
 	{
 		vector<string> outPutString;
 		unordered_multimap<string, string>* currentCommand = commandIOVector.at(i);
@@ -161,19 +141,14 @@ void Dialog::on_generateButton_released()
 			}
 		}
 		//copy(outPutString.begin(), outPutString.end(), ostream_iterator<string>(send, ","));
-		string send = boost::algorithm::join(outPutString, ",");
+		auto send = boost::algorithm::join(outPutString, ",");
 		csvFile << send << endl;
 	}
 
 	csvFile.close();
 
-
 	//sftp to the roboRIO
-
-	// TODO: Find a better way to ftp files to the roboRIO
-
-	/* -> cheaty way*/
-	system("python /home/lucas/Desktop/Auto_Gui/Python_Scripts/ftpCSV.py");
+	system("python ./Python_Scripts/ftpCSV.py");
 }
 
 void Dialog::on_loadButton_released()
@@ -183,8 +158,7 @@ void Dialog::on_loadButton_released()
 	std::unordered_map<std::string, vector<string>*> commandsIN;
 
 	string value;
-	string fileName = QFileDialog::getOpenFileName(this,
-	                                               tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
+	string fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
 
 	for (int i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
 	{
@@ -212,7 +186,7 @@ void Dialog::on_loadButton_released()
 	{
 		if (!place->second->at(i).empty())
 		{
-			int currentID = atoi(place->second->at(i).c_str());
+			auto currentID = atoi(place->second->at(i).c_str());
 			CommandBlock* newCommand;
 			string value;
 			vector<string*> constantKeys;
@@ -233,7 +207,7 @@ void Dialog::on_loadButton_released()
 				newCommand = new CommandBlock(CommandBlock::ROTATELEFT);
 				break;
 			case(5):
-				newCommand = new CommandBlock(CommandBlock::TIMEOUT);
+				newCommand = new CommandBlock(CommandBlock::IDLE);
 				constantKeys.push_back(new string("Time Out"));
 				break;
 			case(6):
@@ -248,7 +222,7 @@ void Dialog::on_loadButton_released()
 			newCommand->setXY(x, y);
 			newCommand->setUpConnectors(x, y);
 
-			for (string* key : constantKeys)
+			for (auto key : constantKeys)
 			{
 				std::unordered_map<std::string, vector<string>*>::const_iterator newPlace = commandsIN.find(std::string(*key));
 				value = newPlace->second->at(i);
@@ -260,7 +234,6 @@ void Dialog::on_loadButton_released()
 	}
 	buildView->addCommandsToCanvas(&commandsToSendToCanvas);
 }
-
 
 void Dialog::on_clearButton_released()
 {

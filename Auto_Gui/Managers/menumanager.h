@@ -16,13 +16,10 @@ public:
 
 
 private:
-
 	MenuItem* currentlySelectedItem;
 	std::vector<MenuItem*>* currentMenu;
 	std::vector<MenuItem *> selectedMenuItems;
 	bool anItemIsSelected;
-
-protected:
 };
 #endif // MENUMANAGER_H
 

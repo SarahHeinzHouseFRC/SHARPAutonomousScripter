@@ -23,7 +23,7 @@ public:
 		INT,
 		DOUBLE,
 		STRING,
-		SEQUNTIAL,
+		SEQUENTIAL,
 		STATE
 	};
 

@@ -14,8 +14,8 @@ public:
 	{
 	}
 
-	QRectF boundingRect() const;
-	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+	virtual QRectF boundingRect() const override;
+	virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 	void setXY(int x, int y);
 	void setMoveable();
@@ -33,8 +33,8 @@ private:
 
 
 protected:
-	void mousePressEvent(QGraphicsSceneMouseEvent* event);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 	int xCoord;
 	int yCoord;
 	QPixmap pixmap;

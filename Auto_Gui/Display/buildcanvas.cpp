@@ -16,45 +16,48 @@ void BuildCanvas::mouseReleaseEvent(QMouseEvent* event)
 
 		switch (menuManager->getCurrentlySelectedItem()->getType())
 		{
-		case MenuItem::DRIVEFORWARD:
-			type = CommandBlock::DRIVEFORWARD;
-			break;
+			case MenuItem::DRIVEFORWARD:
+				type = CommandBlock::DRIVEFORWARD;
+				break;
 
-		case MenuItem::DRIVEBACKWARD:
-			type = CommandBlock::DRIVEBACKWARD;
-			break;
+			case MenuItem::DRIVEBACKWARD:
+				type = CommandBlock::DRIVEBACKWARD;
+				break;
 
-		case MenuItem::ROTATELEFT:
-			type = CommandBlock::ROTATELEFT;
-			break;
+			case MenuItem::ROTATELEFT:
+				type = CommandBlock::ROTATELEFT;
+				break;
 
-		case MenuItem::ROTATERIGHT:
-			type = CommandBlock::ROTATERIGHT;
-			break;
+			case MenuItem::ROTATERIGHT:
+				type = CommandBlock::ROTATERIGHT;
+				break;
 
-		case MenuItem::AUTOSTART:
-			type = CommandBlock::AUTOSTART;
-			break;
+			case MenuItem::AUTOSTART:
+				type = CommandBlock::AUTOSTART;
+				break;
 
-		case MenuItem::TIMEOUT:
-			type = CommandBlock::TIMEOUT;
-			break;
+			case MenuItem::TIMEOUT:
+				type = CommandBlock::IDLE;
+				break;
 
-		case MenuItem::ELEVATORUP:
-			type = CommandBlock::ELEVATORUP;
-			break;
+			case MenuItem::ELEVATORUP:
+				type = CommandBlock::ELEVATORUP;
+				break;
 
-		case MenuItem::ELEVATORDOWN:
-			type = CommandBlock::ELEVATORDOWN;
-			break;
+			case MenuItem::ELEVATORDOWN:
+				type = CommandBlock::ELEVATORDOWN;
+				break;
 
-		case MenuItem::GRABTOTE:
-			type = CommandBlock::GRABTOTE;
-			break;
+			case MenuItem::GRABTOTE:
+				type = CommandBlock::GRABTOTE;
+				break;
 
-		case MenuItem::RELEASETOTE:
-			type = CommandBlock::RELEASETOTE;
-			break;
+			case MenuItem::RELEASETOTE:
+				type = CommandBlock::RELEASETOTE;
+				break;
+
+			default: 
+				break;
 		}
 
 		command = new CommandBlock(type);
@@ -83,10 +86,9 @@ void BuildCanvas::mouseReleaseEvent(QMouseEvent* event)
 	if (selectedConnectors.size() == 2)
 	{
 		printf("New Connection Made \n");
-		if (selectedConnectors.at(0)->getType() == Connector::SEQUNTIAL && selectedConnectors.at(1)->getType() == Connector::SEQUNTIAL)
+		if (selectedConnectors.at(0)->getType() == Connector::SEQUENTIAL && selectedConnectors.at(1)->getType() == Connector::SEQUENTIAL)
 		{
-			activeConnections.push_back(new Connection(selectedConnectors.at(0),
-			                                           selectedConnectors.at(1)));
+			activeConnections.push_back(new Connection(selectedConnectors.at(0), selectedConnectors.at(1)));
 
 			selectedConnectors.at(0)->setInConnection();
 			selectedConnectors.at(1)->setInConnection();
@@ -218,7 +220,7 @@ void BuildCanvas::updateCanvas()
 		if (currentConnector->toBeDeleted())
 		{
 			this->scene()->removeItem(currentConnector);
-			if (currentConnector->getConstant() != NULL)
+			if (currentConnector->getConstant() != nullptr)
 			{
 				this->scene()->removeItem(currentConnector->getConstant()->getLine());
 			}
@@ -227,9 +229,9 @@ void BuildCanvas::updateCanvas()
 		}
 	}
 
-	for (int i = 0; i < activeCommands.size(); i++)
+	for (auto i = 0; i < activeCommands.size(); i++)
 	{
-		CommandBlock* currentCommand = activeCommands.at(i);
+		auto currentCommand = activeCommands.at(i);
 		if (currentCommand->toBeDeleted())
 		{
 			this->scene()->removeItem(currentCommand);
@@ -237,18 +239,18 @@ void BuildCanvas::updateCanvas()
 		}
 	}
 
-	for (int i = 0; i < universalConnectors.size(); i++)
+	for (auto i = 0; i < universalConnectors.size(); i++)
 	{
-		Connector* currentConnector = universalConnectors.at(i);
+		auto currentConnector = universalConnectors.at(i);
 		if (currentConnector->isSelected())
 		{
 			selectedConnectors.push_back(currentConnector);
 			universalConnectors.erase(universalConnectors.begin() + i);
 		}
 	}
-	for (int i = 0; i < activeConnections.size(); i++)
+	for (auto i = 0; i < activeConnections.size(); i++)
 	{
-		Connection* currentConnection = activeConnections.at(i);
+		auto currentConnection = activeConnections.at(i);
 		if (currentConnection->shouldBeRemoved())
 		{
 			printf("removing connection \n");
@@ -269,24 +271,22 @@ void BuildCanvas::updateCanvas()
 	}
 
 
-	for (int i = 0; i < universalConnectors.size(); i++)
+	for (auto i = 0; i < universalConnectors.size(); i++)
 	{
-		Connector* currentConnector = universalConnectors.at(i);
+		auto currentConnector = universalConnectors.at(i);
 		if (currentConnector->constantIsReady())
 		{
 			scene()->addWidget(currentConnector->getConstant());
 
-			QGraphicsLineItem* graphic;
+			QGraphicsLineItem* graphic = nullptr;
 			switch (currentConnector->getLocation())
 			{
-			case Connector::TOP:
-				graphic = scene()->addLine(currentConnector->getX() + 6, currentConnector->getY(), currentConnector->getConstant()->x() + currentConnector->getConstant()->width() / 2,
-				                           currentConnector->getConstant()->y() + currentConnector->getConstant()->height());
-				break;
-			case Connector::LEFT:
-				graphic = scene()->addLine(currentConnector->getX(), currentConnector->getY() + 6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width(),
-				                           currentConnector->getConstant()->y() + currentConnector->getConstant()->height() / 2);
-				break;
+				case Connector::TOP:
+					graphic = scene()->addLine(currentConnector->getX() + 6, currentConnector->getY(), currentConnector->getConstant()->x() + currentConnector->getConstant()->width() / 2, currentConnector->getConstant()->y() + currentConnector->getConstant()->height());
+					break;
+				case Connector::LEFT:
+					graphic = scene()->addLine(currentConnector->getX(), currentConnector->getY() + 6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width(), currentConnector->getConstant()->y() + currentConnector->getConstant()->height() / 2);
+					break;
 			}
 
 			currentConnector->getConstant()->setLine(graphic);

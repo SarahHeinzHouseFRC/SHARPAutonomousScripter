@@ -16,7 +16,7 @@ public:
 		DRIVELEFT,
 		DRIVERIGHT,
 		AUTOSTART,
-		TIMEOUT,
+		IDLE,
 		ELEVATORUP,
 		ELEVATORDOWN,
 		GRABTOTE,
@@ -30,7 +30,6 @@ public:
 	unordered_multimap<string, string>* sendOutputs();
 	void setUpConnectors(int x, int y);
 	vector<Connector*>* getConnectors();
-	std::string getName();
 	Connector* getLeftSideSequential();
 	Connector* getRightSideSequential();
 	int getID();
@@ -47,7 +46,7 @@ private:
 protected:
 	unordered_multimap<string, string> commandIO;
 	vector<Connector*> connectors;
-	void mousePressEvent(QGraphicsSceneMouseEvent* event);
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 };
 
 #endif // COMMANDBLOCK_H

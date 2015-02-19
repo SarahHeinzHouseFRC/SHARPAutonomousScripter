@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>Resources/Arm.png</file>
+        <file>Resources/connectorSelected.png</file>
+        <file>Resources/driveBack.png</file>
+        <file>Resources/driveForward.png</file>
+        <file>Resources/Drive GUI.png</file>
+        <file>Resources/pickUP.png</file>
+        <file>Resources/Timeout.png</file>
+        <file>Resources/intConnector.png</file>
+        <file>Resources/doubleConnector.png</file>
+        <file>Resources/elevatorUp.png</file>
+        <file>Resources/startAuto.png</file>
+        <file>Resources/elevatorDown.png</file>
+        <file>Resources/rotateRight90.png</file>
+        <file>Resources/rotateLeft90.png</file>
+        <file>Resources/releaseArm.png</file>
+        <file>Resources/connectorOut.png</file>
+        <file>Resources/connectorIn.png</file>
+    </qresource>
+    <qresource prefix="/scripts"/>
+</RCC>

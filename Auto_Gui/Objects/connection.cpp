@@ -5,6 +5,8 @@ Connection::Connection(Connector * connectionTO, Connector * connectionFROM)
     this->connectorTO = connectionTO;
     this->connectorFROM = connectionFROM;
     setLine(connectorTO->getX(), connectorTO->getY(), connectorFROM->getX(),connectorFROM->getY());
+    connectorTO->setInConnection();
+    connectorFROM->setInConnection();
     inScene = false;
     shouldRemove = false;
 

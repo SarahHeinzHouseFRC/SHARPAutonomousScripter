@@ -17,6 +17,7 @@
 #include <sstream>
 #include <QFileDialog>
 #include "Resources/csv_v3.h"
+#include<QMessageBox>
 
 
 namespace Ui {

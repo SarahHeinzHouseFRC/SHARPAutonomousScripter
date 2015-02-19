@@ -16,8 +16,8 @@ Dialog::Dialog(QWidget *parent) :
     buildView = new BuildCanvas(this, &menuManagerMain);
     buildView->setScene(buildScene);
     buildView->setGeometry(10,120,790,360);
-    buildView->setSceneRect(10,120,1000,340);
-    buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    buildView->setSceneRect(10,120,2000,340);
+    buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     buildView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     //ui->driveGraphicsView->setScene(driveMenuScene);
@@ -177,6 +177,15 @@ void Dialog::on_generateButton_released()
 
 void Dialog::on_loadButton_released()
 {
+
+    QMessageBox warningMessage;
+    warningMessage.setText("Loading a file will delete your current workspace.");
+    warningMessage.setInformativeText("Do you want to load file?");
+    warningMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    int choice = warningMessage.exec();
+
+    if(choice == QMessageBox::Yes){
+
     buildView->wipe();
 
  std::unordered_map<std::string,vector<string>*> commandsIN;
@@ -184,7 +193,7 @@ void Dialog::on_loadButton_released()
    string value;
    string fileName = QFileDialog::getOpenFileName(this,
         tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
-
+   if(!fileName.empty()){
    for(int i = 0; i < sizeof(keys)/sizeof(keys[0]); i++){
         io::CSVReader<1> in(fileName);
        in.read_header(io::ignore_extra_column,string(keys[i]));
@@ -196,7 +205,7 @@ void Dialog::on_loadButton_released()
   }
    vector <CommandBlock *> commandsToSendToCanvas;
        int x = 10;
-       int y = 300;
+       int y = 250;
 
        commandsToSendToCanvas.push_back(new CommandBlock(CommandBlock::AUTOSTART));
        commandsToSendToCanvas.at(0)->setXY(x,y);
@@ -220,15 +229,23 @@ void Dialog::on_loadButton_released()
 
        case(1):
            newCommand = new CommandBlock(CommandBlock::DRIVEFORWARD);
+           constantKeys.push_back(new string("Drive Distance"));
+           constantKeys.push_back(new string("Command Timeout"));
            break;
        case(-1):
            newCommand = new CommandBlock(CommandBlock::DRIVEBACKWARD);
+           constantKeys.push_back(new string("Drive Distance"));
+           constantKeys.push_back(new string("Command Timeout"));
            break;
        case(2):
             newCommand = new CommandBlock(CommandBlock::ROTATERIGHT);
+            constantKeys.push_back(new string("Degree to Rotate"));
+            constantKeys.push_back(new string("Command Timeout"));
            break;
        case(-2):
             newCommand = new CommandBlock(CommandBlock::ROTATELEFT);
+            constantKeys.push_back(new string("Degree to Rotate"));
+            constantKeys.push_back(new string("Command Timeout"));
            break;
        case(5):
            newCommand = new CommandBlock(CommandBlock::TIMEOUT);
@@ -240,6 +257,14 @@ void Dialog::on_loadButton_released()
        case(-6):
             newCommand = new CommandBlock(CommandBlock::GRABTOTE);
             break;
+       case(7):
+           newCommand = new CommandBlock(CommandBlock::ELEVATORUP);
+           constantKeys.push_back(new string("Elevator Position"));
+           break;
+       case(-7):
+           newCommand = new CommandBlock(CommandBlock::ELEVATORDOWN);
+           constantKeys.push_back(new string("Elevator Position"));
+           break;
        default:
            break;
 
@@ -258,8 +283,10 @@ void Dialog::on_loadButton_released()
        commandsToSendToCanvas.push_back(newCommand);
      }
 
+     }
+    buildView->addCommandsToCanvas(&commandsToSendToCanvas);
    }
-   buildView->addCommandsToCanvas(&commandsToSendToCanvas);
+  }
 }
 
 

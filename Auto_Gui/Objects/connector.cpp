@@ -119,6 +119,9 @@ void Connector::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if(constant != NULL && type != SEQUNTIAL){
             myMenu.addAction("Remove Constant");
             }
+            if(type == SEQUNTIAL && partOfConnection){
+                myMenu.addAction("Remove Connection");
+            }
             QAction* selectedItem = myMenu.exec(globalPos);
             if(selectedItem !=NULL && this->type != SEQUNTIAL){
                 if(selectedItem->iconText().toStdString() == "Add Constant"){
@@ -134,6 +137,11 @@ void Connector::mousePressEvent(QGraphicsSceneMouseEvent *event)
                      constant = NULL;
 
                  }
+            }else if(type == SEQUNTIAL){
+                if(selectedItem != NULL)
+                {
+                    if(selectedItem ->iconText().toStdString() == "Remove Connection") deleteConnection = true;
+                }
             }
 
     }else{

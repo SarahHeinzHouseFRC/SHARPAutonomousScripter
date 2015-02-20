@@ -8,12 +8,9 @@ CommandBlock::CommandBlock(ScriptedAutonomous::CommandType type): AutonomousGuiO
     switch(type){
 
          case ScriptedAutonomous::AUTOSTART:
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
             setPixmap(":/Icons/Resources/startAuto.png");
              ID =0;
          break;
-
-
         case ScriptedAutonomous::DRIVEFORWARD:
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Drive Distance"));
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Command Timeout"));

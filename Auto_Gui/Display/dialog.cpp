@@ -47,12 +47,12 @@ void Dialog::loadGuiElelements()
     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATERIGHT, ui->driveTab));
     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATELEFT,ui->driveTab));
 
-     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::GRABTOTE, ui->armTab));
-     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::RELEASETOTE, ui->armTab));
+    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::GRABTOTE, ui->armTab));
+    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::RELEASETOTE, ui->armTab));
 
-     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORUP, ui->elevatorTab));
-     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORDOWN, ui->elevatorTab));
-     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::NAVX, ui->sensorTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORUP, ui->elevatorTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORDOWN, ui->elevatorTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::NAVX, ui->sensorTab));
 
     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::AUTOSTART, ui->startStopTab));
 
@@ -94,29 +94,29 @@ void Dialog::on_generateButton_released()
 
     for(int i = 0; i < sizeOfKeys; i++){
         outPutStuff.insert(std::make_pair<string , vector<string>*>
-                            (std::string(keys[i]),
-                             new std::vector<string>(sizeOfKeys)));
+                           (std::string(keys[i]),
+                            new std::vector<string>(sizeOfKeys)));
     }
 
-   vector<unordered_multimap<string,string>*> commandIOVector;
-   ofstream csvFile;
-   string sendCommmandCode;
+    vector<unordered_multimap<string,string>*> commandIOVector;
+    ofstream csvFile;
+    string sendCommmandCode;
 
     vector<CommandBlock* > orderedCommands = buildView->orderConnections();
     vector<string> commandCode;
-        for(int i = 0; i < orderedCommands.size(); i++){
+    for(int i = 0; i < orderedCommands.size(); i++){
         orderedCommands.at(i)->getInputs();
         //ommandCode.push_back(std::to_string(orderedCommands.at(i)->getID()));
         commandIOVector.push_back(orderedCommands.at(i)->sendOutputs());
-     }
-        csvFile.open("/home/lucas/Desktop/autonomousVariables.csv");
+    }
+    csvFile.open("/home/lucas/Desktop/autonomousVariables.csv");
 
-        sendCommmandCode = boost::algorithm::join(keys,",");
-        csvFile << sendCommmandCode << endl;
+    sendCommmandCode = boost::algorithm::join(keys,",");
+    csvFile << sendCommmandCode << endl;
 
-       /* for(int i = 0; i < commandIOVector.size();i++){
+    /* for(int i = 0; i < commandIOVector.size();i++){
 
-            for(int k = 0; k  < sizeof(keys) / sizeof(keys[0]); k++){ 
+            for(int k = 0; k  < sizeof(keys) / sizeof(keys[0]); k++){
                 std::unordered_map<std::string,string>::const_iterator place  = currentCommandBlock->find(std::string(keys[k]));
                 std::unordered_map<std::string,vector<string>*>::const_iterator placeVector = outPutStuff.find(std::string(keys[k]));
                 if(place == currentCommandBlock->end()){
@@ -144,32 +144,32 @@ void Dialog::on_generateButton_released()
 
 
 
-        for(int i = 0; i < commandIOVector.size(); i++){
-            vector<string> outPutString;
-            unordered_multimap<string,string>* currentCommand = commandIOVector.at(i);
-                    for(int k =0; k < sizeOfKeys; k++){
-                        std::unordered_map<std::string,string>::const_iterator place  = currentCommand->find(std::string(keys[k]));
-                if(place == currentCommand->end()){
-                    outPutString.push_back("0");
-                }else{
+    for(int i = 0; i < commandIOVector.size(); i++){
+        vector<string> outPutString;
+        unordered_multimap<string,string>* currentCommand = commandIOVector.at(i);
+        for(int k =0; k < sizeOfKeys; k++){
+            std::unordered_map<std::string,string>::const_iterator place  = currentCommand->find(std::string(keys[k]));
+            if(place == currentCommand->end()){
+                outPutString.push_back("0");
+            }else{
                 outPutString.push_back(place->second);
-                }
-
             }
-                    //copy(outPutString.begin(), outPutString.end(), ostream_iterator<string>(send, ","));
-                    string send = boost::algorithm::join(outPutString,",");
-                    csvFile << send << endl;
 
         }
+        //copy(outPutString.begin(), outPutString.end(), ostream_iterator<string>(send, ","));
+        string send = boost::algorithm::join(outPutString,",");
+        csvFile << send << endl;
 
-        csvFile.close();
+    }
+
+    csvFile.close();
 
 
-        //sftp to the roboRIO
+    //sftp to the roboRIO
 
-        // TODO: Find a better way to ftp files to the roboRIO
+    // TODO: Find a better way to ftp files to the roboRIO
 
-        /* -> cheaty way*/ system("python /home/lucas/Desktop/Auto_Gui/Python_Scripts/ftpCSV.py");
+    /* -> cheaty way*/ system("python /home/lucas/Desktop/Auto_Gui/Python_Scripts/ftpCSV.py");
 
 
 
@@ -186,107 +186,103 @@ void Dialog::on_loadButton_released()
 
     if(choice == QMessageBox::Yes){
 
-    buildView->wipe();
+        buildView->wipe();
 
- std::unordered_map<std::string,vector<string>*> commandsIN;
+        std::unordered_map<std::string,vector<string>*> commandsIN;
 
-   string value;
-   string fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
-   if(!fileName.empty()){
-   for(int i = 0; i < sizeof(keys)/sizeof(keys[0]); i++){
-        io::CSVReader<1> in(fileName);
-       in.read_header(io::ignore_extra_column,string(keys[i]));
-       commandsIN.insert(std::make_pair<string, vector<string>*>(string(keys[i]),new vector<string>(sizeof(keys)/sizeof(keys[0]))));
-   while(in.read_row(value)){
-        std::unordered_map<std::string,vector<string>* >::const_iterator place  = commandsIN.find(std::string(keys[i]));
-        place->second->push_back(value);
-   }
-  }
-   vector <CommandBlock *> commandsToSendToCanvas;
-       int x = 10;
-       int y = 250;
+        string value;
+        string fileName = QFileDialog::getOpenFileName(this,
+                                                       tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
+        if(!fileName.empty()){
+            for(int i = 0; i < sizeof(keys)/sizeof(keys[0]); i++){
+                io::CSVReader<1> in(fileName);
+                in.read_header(io::ignore_extra_column,string(keys[i]));
+                commandsIN.insert(std::make_pair<string, vector<string>*>(string(keys[i]),new vector<string>(sizeof(keys)/sizeof(keys[0]))));
+                while(in.read_row(value)){
+                    std::unordered_map<std::string,vector<string>* >::const_iterator place  = commandsIN.find(std::string(keys[i]));
+                    place->second->push_back(value);
+                }
+            }
+            vector <CommandBlock *> commandsToSendToCanvas;
+            int x = 10;
+            int y = 250;
 
-       commandsToSendToCanvas.push_back(new CommandBlock(ScriptedAutonomous::AUTOSTART));
-       commandsToSendToCanvas.at(0)->setXY(x,y);
-       commandsToSendToCanvas.at(0)->setUpConnectors(x,y);
+            commandsToSendToCanvas.push_back(new CommandBlock(ScriptedAutonomous::AUTOSTART));
+            commandsToSendToCanvas.at(0)->setXY(x,y);
+            commandsToSendToCanvas.at(0)->setUpConnectors(x,y);
 
-        std::unordered_map<std::string,vector<string>* >::const_iterator place = commandsIN.find("ID");
-       std::unordered_map<std::string,vector<string>*> dataWithoutWhiteSpaces;
+            std::unordered_map<std::string,vector<string>* >::const_iterator place = commandsIN.find("ID");
+            std::unordered_map<std::string,vector<string>*> dataWithoutWhiteSpaces;
 
-   for(int i =0; i < place->second->size();i++){
+            for(int i =0; i < place->second->size();i++){
 
+                if(!place->second->at(i).empty()){
+                    int currentID = atoi(place->second->at(i).c_str());
+                    CommandBlock* newCommand;
+                    string value;
+                    vector<string*> constantKeys;
+                    x+=100;
 
-       if(!place->second->at(i).empty()){
-        int currentID = atoi(place->second->at(i).c_str());
-       CommandBlock* newCommand;
-       string value;
-       vector<string*> constantKeys;
-       x+=100;
+                    switch(currentID){
+                    case(1):
+                        newCommand = new CommandBlock(ScriptedAutonomous::DRIVEFORWARD);
+                        break;
+                    case(-1):
+                        newCommand = new CommandBlock(ScriptedAutonomous::DRIVEBACKWARD);
+                        break;
+                    case(2):
+                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATERIGHT);
+                        break;
+                    case(-2):
+                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATELEFT);
+                        break;
+                    case(5):
+                        newCommand = new CommandBlock(ScriptedAutonomous::TIMEOUT);
+                        break;
+                    case(6):
+                        newCommand = new CommandBlock(ScriptedAutonomous::RELEASETOTE);
+                        break;
+                    case(-6):
+                        newCommand = new CommandBlock(ScriptedAutonomous::GRABTOTE);
+                        break;
+                    case(7):
+                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORUP);
+                        break;
+                    case(-7):
+                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
+                        break;
+                    case(8):
+                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
+                        break;
+                    default:
+                        break;
 
-       switch(currentID){
+                    }
 
+                    newCommand->setXY(x,y);
+                    newCommand->setUpConnectors(x,y);
 
-       case(1):
-           newCommand = new CommandBlock(ScriptedAutonomous::DRIVEFORWARD);
-           constantKeys.push_back(new string("Drive Distance"));
-           constantKeys.push_back(new string("Command Timeout"));
-           break;
-       case(-1):
-           newCommand = new CommandBlock(ScriptedAutonomous::DRIVEBACKWARD);
-           constantKeys.push_back(new string("Drive Distance"));
-           constantKeys.push_back(new string("Command Timeout"));
-           break;
-       case(2):
-            newCommand = new CommandBlock(ScriptedAutonomous::ROTATERIGHT);
-            constantKeys.push_back(new string("Degree to Rotate"));
-            constantKeys.push_back(new string("Command Timeout"));
-           break;
-       case(-2):
-            newCommand = new CommandBlock(ScriptedAutonomous::ROTATELEFT);
-            constantKeys.push_back(new string("Degree to Rotate"));
-            constantKeys.push_back(new string("Command Timeout"));
-           break;
-       case(5):
-           newCommand = new CommandBlock(ScriptedAutonomous::TIMEOUT);
-           constantKeys.push_back(new string("Time Out"));
-           break;
-       case(6):
-            newCommand = new CommandBlock(ScriptedAutonomous::RELEASETOTE);
-           break;
-       case(-6):
-            newCommand = new CommandBlock(ScriptedAutonomous::GRABTOTE);
-            break;
-       case(7):
-           newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORUP);
-           constantKeys.push_back(new string("Elevator Position"));
-           break;
-       case(-7):
-           newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
-           constantKeys.push_back(new string("Elevator Position"));
-           break;
-       default:
-           break;
+                    for(int k = 0; k < newCommand->getConnectors()->size(); k++){
 
-       }
-       newCommand->setXY(x,y);
-       newCommand->setUpConnectors(x,y);
+                        Connector* currentConnector = newCommand->getConnectors()->at(k);
+                        if(currentConnector->getName().find("Sequence") == std::string::npos){
+                            ui->debug->setText(QString::fromStdString(currentConnector->getName()));
+                            constantKeys.push_back(new string(currentConnector->getName()));
+                        }
+                        for(string* key : constantKeys){
+                            std::unordered_map<std::string,vector<string>* >::const_iterator newPlace  = commandsIN.find(std::string(*key));
+                            value = newPlace->second->at(i);
+                            newCommand->getConnectorByName(*key)->setConstantReady();
+                            newCommand->getConnectorByName(*key)->getConstant()->setText(QString::fromStdString(value));
+                        }
+                        commandsToSendToCanvas.push_back(newCommand);
+                    }
 
-        for(string* key : constantKeys){
-           std::unordered_map<std::string,vector<string>* >::const_iterator newPlace  = commandsIN.find(std::string(*key));
-           value = newPlace->second->at(i);
-           newCommand->getConnectorByName(*key)->setConstantReady();
-           newCommand->getConnectorByName(*key)->getConstant()->setText(QString::fromStdString(value));
-
-
-       }
-       commandsToSendToCanvas.push_back(newCommand);
-     }
-
-     }
-    buildView->addCommandsToCanvas(&commandsToSendToCanvas);
-   }
-  }
+                }
+                buildView->addCommandsToCanvas(&commandsToSendToCanvas);
+            }
+        }
+    }
 }
 
 

@@ -167,9 +167,7 @@ void BuildCanvas::updateCanvas(){
     for(int i =0; i < universalConnectors.size(); i++){
          Connector * currentConnector = universalConnectors.at(i);
         if(currentConnector->toBeDeleted()){
-            this->scene()->removeItem(currentConnector);
             if(currentConnector->getConstant() != NULL){
-            this->scene()->removeItem(currentConnector->getConstant()->getLine());
             }
             universalConnectors.erase(universalConnectors.begin()+i);
             delete currentConnector;

@@ -71,15 +71,16 @@ CommandBlock::CommandBlock(ScriptedAutonomous::CommandType type): AutonomousGuiO
             connectors.push_back(new Connector( Connector::TOP,Connector::STATE, "Elevator Position"));
             setPixmap(":/Icons/Resources/elevatorDown.png");
         ID = -7;
-
+        break;
         case ScriptedAutonomous::NAVX:
             setPixmap(":/Icons/Resources/navX.png");
-            connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Gyro Value"));
+            connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Zero Gryo"));
         ID = 8;
         break;
     }
     connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-    connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
+    if(type != ScriptedAutonomous::AUTOSTART) connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
+
     this->type = type;
 }
 void CommandBlock::getInputs(){

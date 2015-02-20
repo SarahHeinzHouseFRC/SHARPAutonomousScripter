@@ -11,62 +11,8 @@ void BuildCanvas::mouseReleaseEvent(QMouseEvent *event)
 
     if(menuManager->itemIsSelected()){
        CommandBlock * command;
-       string pathToPixmap;
-       CommandBlock::Type type;
-
-     switch(menuManager->getCurrentlySelectedItem()->getType()){
-
-
-     case MenuItem::DRIVEFORWARD:
-
-                type = CommandBlock::DRIVEFORWARD;
-     break;
-
-     case MenuItem::DRIVEBACKWARD:
-         type = CommandBlock::DRIVEBACKWARD;
-     break;
-
-     case MenuItem::ROTATELEFT:
-
-         type = CommandBlock::ROTATELEFT;
-     break;
-
-     case MenuItem::ROTATERIGHT:
-
-         type = CommandBlock::ROTATERIGHT;
-     break;
-     case MenuItem::AUTOSTART:
-
-         type = CommandBlock::AUTOSTART;
-     break;
-
-     break;
-     case MenuItem::TIMEOUT:
-
-         type = CommandBlock::TIMEOUT;
-         break;
-
-     case MenuItem::ELEVATORUP:
-         type = CommandBlock::ELEVATORUP;
-
-         break;
-
-     case MenuItem::ELEVATORDOWN:
-         type = CommandBlock::ELEVATORDOWN;
-
-         break;
-
-     case MenuItem::GRABTOTE:
-         type = CommandBlock::GRABTOTE;
-         break;
-
-     case MenuItem::RELEASETOTE:
-         type = CommandBlock::RELEASETOTE;
-         break;
-        }
-
-      command = new CommandBlock(type);
-      if(type == CommandBlock::AUTOSTART){
+      command = new CommandBlock(menuManager->getCurrentlySelectedItem()->getType());
+      if(menuManager->getCurrentlySelectedItem()->getType() == ScriptedAutonomous::AUTOSTART){
           autoStart = command;
           printf("%d \n",autoStart);
       }

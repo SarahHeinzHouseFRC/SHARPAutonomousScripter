@@ -32,7 +32,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="driveTab">
     <attribute name="title">
@@ -49,9 +49,9 @@
      <string>Elevator</string>
     </attribute>
    </widget>
-   <widget class="QWidget" name="visionTab">
+   <widget class="QWidget" name="sensorTab">
     <attribute name="title">
-     <string>Vision</string>
+     <string>Sensors</string>
     </attribute>
    </widget>
    <widget class="QWidget" name="timeoutTab">

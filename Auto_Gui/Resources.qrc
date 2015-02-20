@@ -17,6 +17,7 @@
         <file>Resources/releaseArm.png</file>
         <file>Resources/connectorOut.png</file>
         <file>Resources/connectorIn.png</file>
+        <file>Resources/navX.png</file>
     </qresource>
     <qresource prefix="/scripts"/>
 </RCC>

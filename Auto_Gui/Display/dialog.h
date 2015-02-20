@@ -18,6 +18,7 @@
 #include <QFileDialog>
 #include "Resources/csv_v3.h"
 #include<QMessageBox>
+#include "ScriptedAutonomous.h"
 
 
 namespace Ui {
@@ -41,14 +42,14 @@ private:
     QGraphicsScene *buildScene;
     BuildCanvas *buildView;
     AutonomousGuiObject *object;
-    vector<MenuItem*> driveBlocks;
+    vector<MenuItem*> toolBoxItems;
     vector<MenuItem*> constantBlocks;
     vector<AutonomousGuiObject> visionBlocks;
     vector<AutonomousGuiObject> timeoutBlocks;
     QTimer *timer;
     vector<vector<Connector*> > connections;
     void loadGuiElelements();
-    string keys[9] = {"ID","Command Timeout","Drive Speed","Elevator Speed","Time Out", "Drive Distance", "Elevator Position","Degree to Rotate","Zero Gyro"};
+    string keys[9] = {"ID","Command Timeout","Drive Speed","Elevator Speed","Time Out", "Drive Distance", "Elevator Position","Degree to Rotate","Gyro Value"};
 
 
 private slots:

@@ -3,30 +3,14 @@
 #include "connector.h"
 #include <unordered_map>
 #include <QMenu>
+#include "ScriptedAutonomous.h"
 
 using namespace std;
 
 class CommandBlock : public AutonomousGuiObject
 {
 public:
-
-    enum Type{
-
-            DRIVEFORWARD,
-            DRIVEBACKWARD,
-            DRIVELEFT,
-            DRIVERIGHT,
-            AUTOSTART,
-            TIMEOUT,
-            ELEVATORUP,
-            ELEVATORDOWN,
-            GRABTOTE,
-            RELEASETOTE,
-            ROTATERIGHT,
-            ROTATELEFT
-    };
-
-    CommandBlock(CommandBlock::Type type);
+    CommandBlock(ScriptedAutonomous::CommandType);
     void getInputs();
     unordered_multimap<string,string>* sendOutputs();
     void setUpConnectors(int x, int y);
@@ -36,14 +20,14 @@ public:
     Connector* getRightSideSequential();
     int getID();
     Connector* getConnectorByName(string name);
-
     ~CommandBlock();
+
 private:
     Connector* leftSequential;
     Connector * rightSequential;
     int ID;
     double value;
-    Type type;
+    ScriptedAutonomous::CommandType type;
 
 protected:
     unordered_multimap<string,string> commandIO;

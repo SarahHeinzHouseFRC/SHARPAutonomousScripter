@@ -14,17 +14,19 @@ Connector::Connector(Connector::Location location, Type type, string name)
     partOfConnection = false;
     this->type = type;
     this->name = name;
-
-    this->setAcceptHoverEvents(true);
-
+    setAcceptHoverEvents(true);
     setFlag(ItemStacksBehindParent);
+
+    string arg;
     switch(type){
 
     case INT:
         this->pathToPixmap = ":/Icons/Resources/intConnector.png";
+        arg = "INT";
         break;
      case DOUBLE:
         this->pathToPixmap = ":/Icons/Resources/doubleConnector.png";
+        arg = "DOUBLE";
         break;
      case SEQUNTIAL:
         if(location == LEFT){
@@ -36,9 +38,11 @@ Connector::Connector(Connector::Location location, Type type, string name)
 
         break;
      case STATE:
+        arg = "ENUM";
         this->pathToPixmap = ":/Icons/Resources/intConnector.png";
         break;
     }
+    this->setToolTip(QString::fromStdString(name + " "+ arg));
 
 }
 
@@ -163,9 +167,8 @@ void Connector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Connector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
+    toolTip();
 
-
-    //QGraphicsScene::QGraphicsSceneHoverEvent(event);
 }
 
 

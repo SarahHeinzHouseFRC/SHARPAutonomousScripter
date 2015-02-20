@@ -1,110 +1,88 @@
 #include "commandblock.h"
 
-CommandBlock::CommandBlock(CommandBlock::Type type): AutonomousGuiObject()
+CommandBlock::CommandBlock(ScriptedAutonomous::CommandType type): AutonomousGuiObject()
 {
 
     setMoveable();
 
     switch(type){
 
-         case AUTOSTART:
+         case ScriptedAutonomous::AUTOSTART:
             connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
             setPixmap(":/Icons/Resources/startAuto.png");
-
              ID =0;
          break;
 
 
-        case DRIVEFORWARD:
+        case ScriptedAutonomous::DRIVEFORWARD:
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Drive Distance"));
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Command Timeout"));
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/Drive GUI.png");
 
             ID = 1;
         break;
-        case DRIVEBACKWARD:
+        case ScriptedAutonomous::DRIVEBACKWARD:
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Drive Distance"));
             connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Command Timeout"));
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
 
             setPixmap(":/Icons/Resources/driveBack.png");
         ID = -1;
         break;
 
 
-        case ROTATERIGHT:
+        case ScriptedAutonomous::ROTATERIGHT:
             connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Degree to Rotate"));
-            connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Zero Gyro"));
             connectors.push_back(new Connector( Connector::LEFT,Connector::DOUBLE, "Command Timeout"));
 
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/rotateRight90.png");
         ID = 2;
 
         break;
 
-        case ROTATELEFT:
+        case ScriptedAutonomous::ROTATELEFT:
 
             connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Degree to Rotate"));
-            connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Zero Gyro"));
             connectors.push_back(new Connector( Connector::LEFT,Connector::DOUBLE, "Command Timeout"));
-
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/rotateLeft90.png");
         ID = -2;
 
         break;
 
-        case TIMEOUT:
-
+        case ScriptedAutonomous::TIMEOUT:
             connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Time Out"));
-
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/Timeout.png");
         ID = 5;
         break;
-        case GRABTOTE:
-
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
+        case ScriptedAutonomous::GRABTOTE:
             setPixmap(":/Icons/Resources/Arm.png");
 
         ID =-6;
         break;
-        case RELEASETOTE:
-
-           connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-           connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
-
+        case ScriptedAutonomous::RELEASETOTE:
             setPixmap(":/Icons/Resources/releaseArm.png");
         ID = 6;
         break;
-        case ELEVATORUP:
+        case ScriptedAutonomous::ELEVATORUP:
 
             connectors.push_back(new Connector( Connector::TOP,Connector::STATE, "Elevator Position"));
-
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/elevatorUp.png");
 
         ID = 7;
         break;
-        case ELEVATORDOWN:
+        case ScriptedAutonomous::ELEVATORDOWN:
 
             connectors.push_back(new Connector( Connector::TOP,Connector::STATE, "Elevator Position"));
-
-            connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-            connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
             setPixmap(":/Icons/Resources/elevatorDown.png");
         ID = -7;
+
+        case ScriptedAutonomous::NAVX:
+            setPixmap(":/Icons/Resources/navX.png");
+            connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Gyro Value"));
+        ID = 8;
         break;
     }
+    connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
+    connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
     this->type = type;
 }
 void CommandBlock::getInputs(){
@@ -112,14 +90,9 @@ void CommandBlock::getInputs(){
 
     commandIO.insert(std::make_pair<std::string,string>("ID", to_string(this->getID())));
     for(int i =0; i < connectors.size(); i++){
-        if(connectors.at(i)->getConstant() != NULL && type != TIMEOUT){
+        if(connectors.at(i)->getConstant() != NULL){
         commandIO.insert(std::make_pair<std::string,string>(connectors.at(i)->getName(),connectors.at(i)->getValue()));
-        }else if (type == TIMEOUT){
-            commandIO.insert(std::make_pair<std::string,string>(connectors.at(i)->getName(),"100"));
-
-
         }
-
     }
 
 }

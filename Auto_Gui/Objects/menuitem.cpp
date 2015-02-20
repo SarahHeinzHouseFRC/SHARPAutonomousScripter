@@ -1,13 +1,48 @@
 #include "menuitem.h"
 
-MenuItem::MenuItem(std::string pathToPixmap, MenuItemType type, QWidget *parent): QLabel(parent)
+MenuItem::MenuItem(ScriptedAutonomous::CommandType type, QWidget *parent): QLabel(parent)
 {
 
+switch(type){
+
+     case ScriptedAutonomous::ScriptedAutonomous::AUTOSTART:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/startAuto.png"));
+     break;
+    case ScriptedAutonomous::DRIVEFORWARD:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/Drive GUI.png"));
+    break;
+    case ScriptedAutonomous::DRIVEBACKWARD:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/driveBack.png"));
+    break;
+    case ScriptedAutonomous::ROTATERIGHT:;
+        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateRight90.png"));
+    break;
+    case ScriptedAutonomous::ROTATELEFT:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateLeft90.png"));
+    break;
+    case ScriptedAutonomous::TIMEOUT:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/Timeout.png"));
+    break;
+    case ScriptedAutonomous::GRABTOTE:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/Arm.png"));
+    break;
+    case ScriptedAutonomous::RELEASETOTE:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/releaseArm.png"));
+    break;
+    case ScriptedAutonomous::ELEVATORUP:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorUp.png"));;
+    break;
+    case ScriptedAutonomous::ELEVATORDOWN:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorDown.png"));
+    break;
+    case ScriptedAutonomous::NAVX:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/navX.png"));
+    break;
+    }
+setPixmap(pixmap);
 this->itemType = type;
 selected = false;
 currentlySelectedMenuItem = false;
-this->pixmap.load(QString::fromStdString(pathToPixmap));
-this->setPixmap(pixmap);
 setFrameShape(Box);
 setFrameShadow(Raised);
 setAlignment(Qt::AlignCenter | Qt::AlignCenter);
@@ -40,7 +75,7 @@ void MenuItem::mouseReleaseEvent(QMouseEvent *event)
 
 }
 
-MenuItem::MenuItemType MenuItem::getType()
+ScriptedAutonomous::CommandType MenuItem::getType()
 {
 
     return itemType;

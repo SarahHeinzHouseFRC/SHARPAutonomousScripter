@@ -42,33 +42,33 @@ Dialog::~Dialog()
 
 void Dialog::loadGuiElelements()
 {
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/Drive GUI.png", MenuItem::DRIVEFORWARD, ui->driveTab));
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/driveBack.png", MenuItem::DRIVEBACKWARD,ui->driveTab));
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/rotateRight90.png", MenuItem::ROTATERIGHT, ui->driveTab));
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/rotateLeft90.png", MenuItem::ROTATELEFT,ui->driveTab));
+    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::DRIVEFORWARD, ui->driveTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::DRIVEBACKWARD,ui->driveTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATERIGHT, ui->driveTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATELEFT,ui->driveTab));
 
-     driveBlocks.push_back(new MenuItem(":/Icons/Resources/Arm.png", MenuItem::GRABTOTE, ui->armTab));
-     driveBlocks.push_back(new MenuItem(":/Icons/Resources/releaseArm.png", MenuItem::RELEASETOTE, ui->armTab));
+     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::GRABTOTE, ui->armTab));
+     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::RELEASETOTE, ui->armTab));
 
-     driveBlocks.push_back(new MenuItem(":/Icons/Resources/elevatorUp.png", MenuItem::ELEVATORUP, ui->elevatorTab));
-     driveBlocks.push_back(new MenuItem(":/Icons/Resources/elevatorDown.png", MenuItem::ELEVATORDOWN, ui->elevatorTab));
+     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORUP, ui->elevatorTab));
+     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORDOWN, ui->elevatorTab));
+     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::NAVX, ui->sensorTab));
+
+    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::AUTOSTART, ui->startStopTab));
+
+    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::TIMEOUT,ui->timeoutTab));
 
 
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/startAuto.png", MenuItem::AUTOSTART, ui->startStopTab));
 
-    driveBlocks.push_back(new MenuItem(":/Icons/Resources/Timeout.png", MenuItem::TIMEOUT,ui->timeoutTab));
-
-
-
-    menuManagerMain.changeCurrentMenu(&driveBlocks);
+    menuManagerMain.changeCurrentMenu(&toolBoxItems);
 
     int k = 0;
-    for(int i = 0; i < driveBlocks.size(); i++)
+    for(int i = 0; i < toolBoxItems.size(); i++)
     {
         if(i > 0){
-            if(driveBlocks.at(i)->parent() != driveBlocks.at(i-1)->parent()) k = 0;}
+            if(toolBoxItems.at(i)->parent() != toolBoxItems.at(i-1)->parent()) k = 0;}
 
-        driveBlocks.at(i)->setGeometry(10+(k*80),10,61,61);
+        toolBoxItems.at(i)->setGeometry(10+(k*80),10,61,61);
         k++;
 
     }
@@ -207,7 +207,7 @@ void Dialog::on_loadButton_released()
        int x = 10;
        int y = 250;
 
-       commandsToSendToCanvas.push_back(new CommandBlock(CommandBlock::AUTOSTART));
+       commandsToSendToCanvas.push_back(new CommandBlock(ScriptedAutonomous::AUTOSTART));
        commandsToSendToCanvas.at(0)->setXY(x,y);
        commandsToSendToCanvas.at(0)->setUpConnectors(x,y);
 
@@ -228,41 +228,41 @@ void Dialog::on_loadButton_released()
 
 
        case(1):
-           newCommand = new CommandBlock(CommandBlock::DRIVEFORWARD);
+           newCommand = new CommandBlock(ScriptedAutonomous::DRIVEFORWARD);
            constantKeys.push_back(new string("Drive Distance"));
            constantKeys.push_back(new string("Command Timeout"));
            break;
        case(-1):
-           newCommand = new CommandBlock(CommandBlock::DRIVEBACKWARD);
+           newCommand = new CommandBlock(ScriptedAutonomous::DRIVEBACKWARD);
            constantKeys.push_back(new string("Drive Distance"));
            constantKeys.push_back(new string("Command Timeout"));
            break;
        case(2):
-            newCommand = new CommandBlock(CommandBlock::ROTATERIGHT);
+            newCommand = new CommandBlock(ScriptedAutonomous::ROTATERIGHT);
             constantKeys.push_back(new string("Degree to Rotate"));
             constantKeys.push_back(new string("Command Timeout"));
            break;
        case(-2):
-            newCommand = new CommandBlock(CommandBlock::ROTATELEFT);
+            newCommand = new CommandBlock(ScriptedAutonomous::ROTATELEFT);
             constantKeys.push_back(new string("Degree to Rotate"));
             constantKeys.push_back(new string("Command Timeout"));
            break;
        case(5):
-           newCommand = new CommandBlock(CommandBlock::TIMEOUT);
+           newCommand = new CommandBlock(ScriptedAutonomous::TIMEOUT);
            constantKeys.push_back(new string("Time Out"));
            break;
        case(6):
-            newCommand = new CommandBlock(CommandBlock::RELEASETOTE);
+            newCommand = new CommandBlock(ScriptedAutonomous::RELEASETOTE);
            break;
        case(-6):
-            newCommand = new CommandBlock(CommandBlock::GRABTOTE);
+            newCommand = new CommandBlock(ScriptedAutonomous::GRABTOTE);
             break;
        case(7):
-           newCommand = new CommandBlock(CommandBlock::ELEVATORUP);
+           newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORUP);
            constantKeys.push_back(new string("Elevator Position"));
            break;
        case(-7):
-           newCommand = new CommandBlock(CommandBlock::ELEVATORDOWN);
+           newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
            constantKeys.push_back(new string("Elevator Position"));
            break;
        default:

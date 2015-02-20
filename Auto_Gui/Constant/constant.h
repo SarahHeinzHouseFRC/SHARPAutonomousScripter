@@ -25,12 +25,6 @@ public:
 
 private:
     QGraphicsLineItem * line;
-protected:
-    on
-
-
-
-
 };
 
 #endif // CONSTANT_H

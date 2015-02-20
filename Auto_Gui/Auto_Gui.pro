@@ -34,7 +34,8 @@ HEADERS += Constant/constant.h \
     Objects/connector.h \
     Objects/connection.h \
     Objects/commandblock.h \
-    Objects/autonomousguiobject.h
+    Objects/autonomousguiobject.h \
+    ScriptedAutonomous.h
 
 FORMS    += dialog.ui
 

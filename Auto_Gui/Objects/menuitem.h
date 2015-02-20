@@ -2,37 +2,21 @@
 #define MENUITEM_H
 #include "autonomousguiobject.h"
 #include <QLabel>
+#include "ScriptedAutonomous.h"
 
 
 class MenuItem : public QLabel
 {
 public:
 
-
-    enum MenuItemType{
-
-        DRIVEFORWARD,
-        DRIVEBACKWARD,
-        DRIVELEFT,
-        DRIVERIGHT,
-        AUTOSTART,
-        TIMEOUT,
-        ELEVATORUP,
-        ELEVATORDOWN,
-        GRABTOTE,
-        RELEASETOTE,
-        ROTATERIGHT,
-        ROTATELEFT
-    };
-
-    MenuItem(std::string pathToPixmap, MenuItemType type, QWidget *parent);
+    MenuItem(ScriptedAutonomous::CommandType, QWidget *parent);
     bool isSelected();
     void setCurrentlySelectedMenuItem();
     void setNotCurrentlySelectedMenuItem();
     void setNotSelected();
     void drawBox();
     QPixmap pixmap;
-    MenuItemType getType();
+    ScriptedAutonomous::CommandType getType();
 
 
 protected:
@@ -43,7 +27,7 @@ protected:
     bool currentlySelectedMenuItem;
 
 private:
-    MenuItemType itemType;
+    ScriptedAutonomous::CommandType itemType;
 
 };
 

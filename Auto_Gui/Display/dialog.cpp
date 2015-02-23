@@ -9,23 +9,14 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-    //testScene->addItem(new DriveCommand("/home/lucas/Desktop/Auto_Gui/driveForward.png"));
-
-    driveMenuScene = new QGraphicsScene(this);
-    buildScene = new QGraphicsScene(this);
     buildView = new BuildCanvas(this, &menuManagerMain);
+    buildScene = new QGraphicsScene(buildView);
     buildView->setScene(buildScene);
-    buildView->setGeometry(10,120,790,360);
-    buildView->setSceneRect(10,120,2000,340);
+    buildView->setGeometry(10,120,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
+    buildView->setSceneRect(10,120,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
     buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     buildView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    //ui->driveGraphicsView->setScene(driveMenuScene);
-
-    //buildScene->addItem(new MenuItem("/home/lucas/Desktop/Auto_Gui/driveForward.png", MenuItem::DRIVE));
-
-    //ui->graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
-    //connect(ui->graphicsView,SIGNAL(customContextMenuRequested(const QPoint)),this,SLOT(ShowContextMenu(QPoint)));
 
     loadGuiElelements();
 
@@ -44,8 +35,8 @@ void Dialog::loadGuiElelements()
 {
     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::DRIVEFORWARD, ui->driveTab));
     toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::DRIVEBACKWARD,ui->driveTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATERIGHT, ui->driveTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATELEFT,ui->driveTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATEPOSITIVE, ui->driveTab));
+    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATENEGATIVE,ui->driveTab));
 
     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::GRABTOTE, ui->armTab));
     toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::RELEASETOTE, ui->armTab));
@@ -75,7 +66,15 @@ void Dialog::loadGuiElelements()
 
 }
 
+void Dialog::resizeEvent(QResizeEvent * event)
+{
+    buildView->setGeometry(10,120,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
+    buildView->setSceneRect(10,120,geometry().width() -20 ,geometry().height() - ui->toolBox->geometry().height());
+    QWidget::resizeEvent(event);
+}
+
 void Dialog::on_graphicsView_destroyed()
+
 {
 
 }
@@ -103,45 +102,14 @@ void Dialog::on_generateButton_released()
     string sendCommmandCode;
 
     vector<CommandBlock* > orderedCommands = buildView->orderConnections();
-    vector<string> commandCode;
     for(int i = 0; i < orderedCommands.size(); i++){
         orderedCommands.at(i)->getInputs();
-        //ommandCode.push_back(std::to_string(orderedCommands.at(i)->getID()));
         commandIOVector.push_back(orderedCommands.at(i)->sendOutputs());
     }
     csvFile.open("/home/lucas/Desktop/autonomousVariables.csv");
 
     sendCommmandCode = boost::algorithm::join(keys,",");
     csvFile << sendCommmandCode << endl;
-
-    /* for(int i = 0; i < commandIOVector.size();i++){
-
-            for(int k = 0; k  < sizeof(keys) / sizeof(keys[0]); k++){
-                std::unordered_map<std::string,string>::const_iterator place  = currentCommandBlock->find(std::string(keys[k]));
-                std::unordered_map<std::string,vector<string>*>::const_iterator placeVector = outPutStuff.find(std::string(keys[k]));
-                if(place == currentCommandBlock->end()){
-                    placeVector->second->push_back("0");
-                    //printf("%d \n", 0);
-                }else{
-                    placeVector->second->push_back(place->second);
-                }
-            }
-        }
-
-
-        for(int i = 0; i < outPutStuff.size();i++){
-            std::unordered_map<std::string,vector<string>*>::const_iterator place  = outPutStuff.find(std::string(keys[i]));
-            vector<string> outPutString;
-            for(int k = 0; k < place->second->size(); k++){
-                if(place->second->at(k) != ""){
-                outPutString.push_back(place->second->at(k));
-                }
-            }
-
-
-
-       }*/
-
 
 
     for(int i = 0; i < commandIOVector.size(); i++){
@@ -156,7 +124,6 @@ void Dialog::on_generateButton_released()
             }
 
         }
-        //copy(outPutString.begin(), outPutString.end(), ostream_iterator<string>(send, ","));
         string send = boost::algorithm::join(outPutString,",");
         csvFile << send << endl;
 
@@ -164,15 +131,9 @@ void Dialog::on_generateButton_released()
 
     csvFile.close();
 
-
-    //sftp to the roboRIO
-
     // TODO: Find a better way to ftp files to the roboRIO
 
     /* -> cheaty way*/ system("python /home/lucas/Desktop/Auto_Gui/Python_Scripts/ftpCSV.py");
-
-
-
 }
 
 void Dialog::on_loadButton_released()
@@ -192,7 +153,7 @@ void Dialog::on_loadButton_released()
 
         string value;
         string fileName = QFileDialog::getOpenFileName(this,
-                                                       tr("Open Image"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
+                                                       tr("Open CSV File"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
         if(!fileName.empty()){
             for(int i = 0; i < sizeof(keys)/sizeof(keys[0]); i++){
                 io::CSVReader<1> in(fileName);
@@ -212,7 +173,6 @@ void Dialog::on_loadButton_released()
             commandsToSendToCanvas.at(0)->setUpConnectors(x,y);
 
             std::unordered_map<std::string,vector<string>* >::const_iterator place = commandsIN.find("ID");
-            std::unordered_map<std::string,vector<string>*> dataWithoutWhiteSpaces;
 
             for(int i =0; i < place->second->size();i++){
 
@@ -231,10 +191,10 @@ void Dialog::on_loadButton_released()
                         newCommand = new CommandBlock(ScriptedAutonomous::DRIVEBACKWARD);
                         break;
                     case(2):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATERIGHT);
+                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATEPOSITIVE);
                         break;
                     case(-2):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATELEFT);
+                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATENEGATIVE);
                         break;
                     case(5):
                         newCommand = new CommandBlock(ScriptedAutonomous::TIMEOUT);
@@ -252,16 +212,14 @@ void Dialog::on_loadButton_released()
                         newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
                         break;
                     case(8):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
+                        newCommand = new CommandBlock(ScriptedAutonomous::NAVX);
                         break;
                     default:
                         break;
-
                     }
 
                     newCommand->setXY(x,y);
                     newCommand->setUpConnectors(x,y);
-
                     for(int k = 0; k < newCommand->getConnectors()->size(); k++){
 
                         Connector* currentConnector = newCommand->getConnectors()->at(k);
@@ -275,12 +233,11 @@ void Dialog::on_loadButton_released()
                             newCommand->getConnectorByName(*key)->setConstantReady();
                             newCommand->getConnectorByName(*key)->getConstant()->setText(QString::fromStdString(value));
                         }
-                        commandsToSendToCanvas.push_back(newCommand);
                     }
-
+                    commandsToSendToCanvas.push_back(newCommand);
                 }
-                buildView->addCommandsToCanvas(&commandsToSendToCanvas);
             }
+            buildView->addCommandsToCanvas(&commandsToSendToCanvas);
         }
     }
 }

@@ -30,6 +30,8 @@ public:
     bool toBeDeleted();
     void setToBeDeleted();
     void setPixmap(std::string pathToPixmap);
+    int getPixmapHeight();
+    int getPixmapWidth();
 private:
 
 

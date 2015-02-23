@@ -21,7 +21,7 @@ void AutonomousGuiObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
     update();
     setFlags(ItemSendsGeometryChanges);
 
-   QGraphicsItem::mousePressEvent(event);
+    QGraphicsItem::mousePressEvent(event);
 
 }
 
@@ -33,7 +33,7 @@ void AutonomousGuiObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 
 
-     QGraphicsItem::mouseReleaseEvent(event);
+    QGraphicsItem::mouseReleaseEvent(event);
 
 }
 
@@ -52,12 +52,6 @@ void AutonomousGuiObject::setXY(int x, int y)
     this->yCoord = y;
 }
 
-void AutonomousGuiObject::setMoveable()
-{
-   // setFlags(ItemIsMovable);
-
-}
-
 bool AutonomousGuiObject::isSelected()
 {
 
@@ -67,7 +61,7 @@ bool AutonomousGuiObject::isSelected()
 void AutonomousGuiObject::setNotSelected()
 {
 
-        selected = false;
+    selected = false;
 
 }
 int AutonomousGuiObject::getX(){
@@ -94,4 +88,12 @@ void AutonomousGuiObject::setPixmap(std::string pathToPimap){
 
     this->pixmap.load(QString::fromStdString(pathToPimap));
 
+}
+int AutonomousGuiObject::getPixmapHeight()
+{
+    return pixmap.height();
+}
+int AutonomousGuiObject::getPixmapWidth()
+{
+    return pixmap.width();
 }

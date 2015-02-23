@@ -22,17 +22,21 @@ public:
     Connector* getConnectorByName(string name);
     ~CommandBlock();
 
+
 private:
     Connector* leftSequential;
     Connector * rightSequential;
     int ID;
     double value;
     ScriptedAutonomous::CommandType type;
+    //QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    QPointF movingPoint;
 
 protected:
     unordered_multimap<string,string> commandIO;
     vector<Connector*> connectors;
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // COMMANDBLOCK_H

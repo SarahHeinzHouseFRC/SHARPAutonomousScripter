@@ -4,170 +4,60 @@
 BuildCanvas::BuildCanvas(QWidget *parent, MenuManager* menuManager):QGraphicsView(parent)
 {
     this->menuManager = menuManager;
+    pen = new QPen();
+    setMouseTracking(true);
 }
 
 void BuildCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
+    QPointF pt = mapToScene(event->pos());
 
     if(menuManager->itemIsSelected()){
-       CommandBlock * command;
-      command = new CommandBlock(menuManager->getCurrentlySelectedItem()->getType());
-      if(menuManager->getCurrentlySelectedItem()->getType() == ScriptedAutonomous::AUTOSTART){
-          autoStart = command;
-          printf("%d \n",autoStart);
-      }
-      command->setXY(event->pos().x(),event->pos().y()+100);
-      command->setMoveable();
-      this->scene()->addItem(command);
-      activeCommands.push_back(command);
+        CommandBlock * command;
+        command = new CommandBlock(menuManager->getCurrentlySelectedItem()->getType());
+        if(menuManager->getCurrentlySelectedItem()->getType() == ScriptedAutonomous::AUTOSTART){
+            autoStart = command;
+        }
+        command->setXY(pt.x(),pt.y());
+        this->scene()->addItem(command);
+        activeCommands.push_back(command);
 
-      for(int i =0; i < command->getConnectors()->size(); i++){
-          command->setUpConnectors(event->pos().x(),event->pos().y()+100);
-          universalConnectors.push_back(command->getConnectors()->at(i));
-          //this->scene()->addItem(command->getConnectors()->at(i));
+        for(int i =0; i < command->getConnectors()->size(); i++){
+            command->setUpConnectors(pt.x(),pt.y());
+            universalConnectors.push_back(command->getConnectors()->at(i));
+        }
 
+        menuManager->getCurrentlySelectedItem()->setNotCurrentlySelectedMenuItem();
+        menuManager->getCurrentlySelectedItem()->setNotSelected();
 
-      }
-
-menuManager->getCurrentlySelectedItem()->setNotCurrentlySelectedMenuItem();
-menuManager->getCurrentlySelectedItem()->setNotSelected();
-
-   }
+    }
 
 
     if(selectedConnectors.size() == 2 ){
         printf("New Connection Made \n");
         if(selectedConnectors.at(0)->getType() == Connector::SEQUNTIAL && selectedConnectors.at(1)->getType() == Connector::SEQUNTIAL){
-             activeConnections.push_back(new Connection(selectedConnectors.at(0),
-                                   selectedConnectors.at(1)));
-
+            activeConnections.push_back(new Connection(selectedConnectors.at(0),
+                                                       selectedConnectors.at(1)));
             selectedConnectors.at(0)->setInConnection();
             selectedConnectors.at(1)->setInConnection();
         }
-      selectedConnectors.at(0)->setNotSelected();
-      selectedConnectors.at(1)->setNotSelected();
-      //selectedConnectors.clear();
+        selectedConnectors.at(0)->setNotSelected();
+        selectedConnectors.at(1)->setNotSelected();
     }
 
-
-    /*printf("%d",universalConnectors.size());
-    //printf("%d",selectedConnectors.size());
-
-        for(int i = 0; i < universalConnectors.size(); i++){
-            if(universalConnectors.at(i)->toBeDeleted()){
-                universalConnectors.erase(universalConnectors.begin()+i);
-            }
-        }
-
-
-          if(menuManager->itemIsSelected()){
-
-
-           switch(menuManager->getCurrentlySelectedItem()->getType()){
-
-
-            case MenuItem::DRIVE:
-               CommandBlock * CommandBlock = new CommandBlock("/home/lucas/Desktop/Auto_Gui/driveForward.png");
-               CommandBlock->setXY(event->pos().x(),event->pos().y()+100);
-               CommandBlock->setMoveable();
-                this->scene()->addItem(CommandBlock);
-
-
-                for(int i =0; i < CommandBlock->getConnectors()->size(); i++){
-                    CommandBlock->setUpConnectors(event->pos().x(),event->pos().y()+100);
-                    universalConnectors.push_back(CommandBlock->getConnectors()->at(i));
-                    this->scene()->addItem(CommandBlock->getConnectors()->at(i));
-                }
-
-            break;
-
-            }
-
-    menuManager->getCurrentlySelectedItem()->setNotCurrentlySelectedMenuItem();
-    menuManager->getCurrentlySelectedItem()->setNotSelected();
-
-         }
-
-          for(int i =0; i < selectedConnectors.size(); i++){
-
-               if(!selectedConnectors.at(i)->isSelected()){
-                   universalConnectors.push_back(selectedConnectors.at(i));
-                   selectedConnectors.erase(selectedConnectors.begin() + i);
-               }
-           }
-
-         for(int i = 0; i < universalConnectors.size(); i++){
-
-
-             if(selectedConnectors.size() == 2){
-                 selectedConnectors.at(1)->setNotSelected();
-                 universalConnectors.push_back(selectedConnectors.at(1));
-                 selectedConnectors.erase(selectedConnectors.begin()+1);
-             }
-             Connector * currentConnector = universalConnectors.at(i);
-             if(currentConnector->isSelected()){
-                 if(currentConnector->constantIsReady() && !currentConnector->toBeDeleted() && currentConnector->getConstant() != NULL){
-                     scene()->addWidget(currentConnector->getConstant());
-                     currentConnector->setNotSelected();
-                     currentConnector->setConstantDone();
-                 }
-
-                  if(selectedConnectors.size() == 1 ){
-
-                      selectedConnectors.push_back(currentConnector);
-                     activeConnections.push_back(new Connection(selectedConnectors.at(0),
-                                                  selectedConnectors.at(1)));
-                      universalConnectors.erase(universalConnectors.begin()+i);
-                     selectedConnectors.at(0)->setNotSelected();
-                     selectedConnectors.at(1)->setNotSelected();
-                     //selectedConnectors.clear();
-                 }else{
-                     selectedConnectors.push_back(currentConnector);
-                      universalConnectors.erase(universalConnectors.begin()+i);
-
-
-                 }
-
-             }
-
-
-         }
-         for(int i =0; i < selectedConnectors.size(); i++){
-
-              if(!selectedConnectors.at(i)->isSelected()){
-                  universalConnectors.push_back(selectedConnectors.at(i));
-                  selectedConnectors.erase(selectedConnectors.begin() + i);
-              }
-          }
-
-         for(int i = 0; i < activeConnections.size();i++){
-             Connection* currentConnection = activeConnections.at(i);
-              if(currentConnection->shouldBeRemoved()){
-                //this->scene()->removeLine(*currentConnection);
-
-            }else if(!currentConnection->isInScene()){
-                this->scene()->addLine(*currentConnection);
-                  currentConnection->setInScene();
-         }else{
-
-                  currentConnection->update();
-
-
-              }
-
-
-
-         }
-
-     */QGraphicsView::mouseReleaseEvent(event);
+    QGraphicsView::mouseReleaseEvent(event);
 }
 void BuildCanvas::updateCanvas(){
 
 
     for(int i =0; i < universalConnectors.size(); i++){
-         Connector * currentConnector = universalConnectors.at(i);
+
+        Connector * currentConnector = universalConnectors.at(i);
         if(currentConnector->toBeDeleted()){
-            if(currentConnector->getConstant() != NULL){
+            this->scene()->removeItem(currentConnector);
+            if (currentConnector->getConstant() != nullptr)
+            {
+                this->scene()->removeItem(currentConnector->getConstant()->getLine());
             }
             universalConnectors.erase(universalConnectors.begin()+i);
             delete currentConnector;
@@ -181,11 +71,8 @@ void BuildCanvas::updateCanvas(){
         if(currentCommand->toBeDeleted()){
             this->scene()->removeItem(currentCommand);
             activeCommands.erase(activeCommands.begin()+i);
-
-
         }
-
-}
+    }
 
     for(int i = 0; i < universalConnectors.size(); i++){
 
@@ -193,28 +80,22 @@ void BuildCanvas::updateCanvas(){
         if(currentConnector->isSelected()){
             selectedConnectors.push_back(currentConnector);
             universalConnectors.erase(universalConnectors.begin()+i);
-
         }
-
-
-       }
+    }
     for(int i = 0; i < activeConnections.size();i++){
         Connection* currentConnection = activeConnections.at(i);
-         if(currentConnection->shouldBeRemoved()){
-             printf("removing connection \n");
-             activeConnections.erase(activeConnections.begin()+i);
-             this->scene()->removeItem(currentConnection->getGraphic());
-       }else if(!currentConnection->isInScene()){
-             printf("adding connection to scene \m");
-           QGraphicsLineItem *graphic = this->scene()->addLine(*currentConnection);
-           currentConnection->setGraphic(graphic);
-           currentConnection->setInScene();
-    }else{
 
-             currentConnection->update();
+        if(currentConnection->shouldBeRemoved()){
+            activeConnections.erase(activeConnections.begin()+i);
+            scene()->removeItem(currentConnection->getGraphic());
+        }else if(!currentConnection->isInScene()){
+            QGraphicsLineItem *graphic = this->scene()->addLine(*currentConnection);
+            currentConnection->setGraphic(graphic);
+            currentConnection->setInScene();
+        }else{
 
-
-         }
+            currentConnection->update();
+        }
     }
 
 
@@ -227,57 +108,57 @@ void BuildCanvas::updateCanvas(){
             switch(currentConnector->getLocation())
             {
             case Connector::TOP:
-             graphic = scene()->addLine(currentConnector->getX()+6, currentConnector->getY(), currentConnector->getConstant()->x() + currentConnector->getConstant()->width()/2,
-                             currentConnector->getConstant()->y() + currentConnector->getConstant()->height());
-            break;
+                graphic = scene()->addLine(currentConnector->getX()+6, currentConnector->getY(), currentConnector->getConstant()->x() + currentConnector->getConstant()->width()/2,
+                                           currentConnector->getConstant()->y() + currentConnector->getConstant()->height());
+                break;
             case Connector::LEFT:
-             graphic = scene()->addLine(currentConnector->getX(), currentConnector->getY()+6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width(),
-                                currentConnector->getConstant()->y() + currentConnector->getConstant()->height()/2);
-             break;
+                graphic = scene()->addLine(currentConnector->getX(), currentConnector->getY()+6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width(),
+                                           currentConnector->getConstant()->y() + currentConnector->getConstant()->height()/2);
+                break;
             }
 
             currentConnector->getConstant()->setLine(graphic);
             currentConnector->setNotSelected();
             currentConnector->setConstantDone();
-    }
+        }
 
     }
 
 
-      for(int i =0; i < selectedConnectors.size(); i++){
+    for(int i =0; i < selectedConnectors.size(); i++){
 
-           if(!selectedConnectors.at(i)->isSelected()){
-               universalConnectors.push_back(selectedConnectors.at(i));
-               selectedConnectors.erase(selectedConnectors.begin() + i);
-           }
-       }
+        if(!selectedConnectors.at(i)->isSelected()){
+            universalConnectors.push_back(selectedConnectors.at(i));
+            selectedConnectors.erase(selectedConnectors.begin() + i);
+        }
+    }
 
 
 
 }
 
- vector<CommandBlock* > BuildCanvas::orderConnections()
+vector<CommandBlock* > BuildCanvas::orderConnections()
 {
-     printf("Starting Export");
+    printf("Starting Export");
     bool firstFound = false;
     vector<CommandBlock* > orderedCommands;
     for(int i = 0; i < activeConnections.size(); i++){
 
-       if(activeConnections.at(i)->getParentTO()->parentItem() == autoStart){
-           orderedCommands.insert(orderedCommands.begin(),dynamic_cast<CommandBlock *>(activeConnections.at(i)->getParentFROM()->parentItem()));
-           firstFound = true;
-           break;
-       }else if(activeConnections.at(i)->getParentFROM()->parentItem() == autoStart){
-           orderedCommands.insert(orderedCommands.begin(),dynamic_cast<CommandBlock *>(activeConnections.at(i)->getParentTO()->parentItem()));
-           firstFound = true;
-           break;
-       }
+        if(activeConnections.at(i)->getParentTO()->parentItem() == autoStart){
+            orderedCommands.insert(orderedCommands.begin(),dynamic_cast<CommandBlock *>(activeConnections.at(i)->getParentFROM()->parentItem()));
+            firstFound = true;
+            break;
+        }else if(activeConnections.at(i)->getParentFROM()->parentItem() == autoStart){
+            orderedCommands.insert(orderedCommands.begin(),dynamic_cast<CommandBlock *>(activeConnections.at(i)->getParentTO()->parentItem()));
+            firstFound = true;
+            break;
+        }
     }
     if(firstFound){
         printf("first found \n");
         int  z =0;
         printf(" Number of connections: %d \n",activeConnections.size());
-         printf(" Number of commands: %d \n",activeCommands.size());
+        printf(" Number of commands: %d \n",activeCommands.size());
         while(orderedCommands.size() < (activeCommands.size()-1)){
             z++;
             CommandBlock* currentCommand = orderedCommands.at(orderedCommands.size()-1);
@@ -287,7 +168,7 @@ void BuildCanvas::updateCanvas(){
                 if(currentConnection->getParentFROM() == rightOfCurrentCommand && currentCommand != autoStart){
                     orderedCommands.push_back(dynamic_cast<CommandBlock *>(currentConnection->getParentTO()->parentItem()));
 
-                 }
+                }
                 else if(currentConnection->getParentTO() == rightOfCurrentCommand && currentCommand != autoStart){
                     orderedCommands.push_back(dynamic_cast<CommandBlock *>(currentConnection->getParentFROM()->parentItem()));
 
@@ -298,34 +179,31 @@ void BuildCanvas::updateCanvas(){
 
     }
     return orderedCommands;
- }
+}
 
- void BuildCanvas::wipe()
- {
-     //for(Connection* connection: activeConnections) connection->setToBeDeleted();
-     for(Connector* connector: universalConnectors) connector->setToBeDeleted();
-     for(CommandBlock* command: activeCommands) command->setToBeDeleted();
+void BuildCanvas::wipe()
+{
+    for(Connector* connector: universalConnectors) connector->setToBeDeleted();
+    for(CommandBlock* command: activeCommands) command->setToBeDeleted();
 
 
- }
+}
 
- void BuildCanvas::addCommandsToCanvas(vector<CommandBlock*>* commands){
+void BuildCanvas::addCommandsToCanvas(vector<CommandBlock*>* commands){
+    printf("Loading File \n");
+    for(int i = 0; i < commands->size(); i++){
 
-     printf("%d",commands->size());
-     for(int i = 0; i < commands->size(); i++){
-
-         CommandBlock* currentCommand = commands->at(i);
-         CommandBlock* lastCommand;
+        CommandBlock* currentCommand = commands->at(i);
+        CommandBlock* lastCommand;
         for(Connector* connector: *currentCommand->getConnectors()) universalConnectors.push_back(connector);
         activeCommands.push_back(currentCommand);
         scene()->addItem(currentCommand);
         if(i != 0)
-        { \
+        {
             lastCommand = commands->at(i-1);
             activeConnections.push_back(new Connection(lastCommand->getRightSideSequential(), currentCommand->getLeftSideSequential()));
         }else{
             autoStart = currentCommand;
-
         }
-     }
- }
+    }
+}

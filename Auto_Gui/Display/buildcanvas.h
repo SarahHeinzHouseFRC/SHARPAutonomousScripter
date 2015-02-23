@@ -31,6 +31,7 @@ private:
     vector<CommandBlock *> activeCommands;
     CommandBlock* autoStart;
     QTimer *timer;
+    QPen* pen;
 
 };
 

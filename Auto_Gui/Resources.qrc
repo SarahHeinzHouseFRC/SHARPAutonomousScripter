@@ -12,12 +12,12 @@
         <file>Resources/elevatorUp.png</file>
         <file>Resources/startAuto.png</file>
         <file>Resources/elevatorDown.png</file>
-        <file>Resources/rotateRight90.png</file>
-        <file>Resources/rotateLeft90.png</file>
         <file>Resources/releaseArm.png</file>
         <file>Resources/connectorOut.png</file>
         <file>Resources/connectorIn.png</file>
         <file>Resources/navX.png</file>
+        <file>Resources/rotateNegative.png</file>
+        <file>Resources/rotatePositive.png</file>
     </qresource>
     <qresource prefix="/scripts"/>
 </RCC>

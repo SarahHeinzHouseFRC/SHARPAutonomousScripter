@@ -1,5 +1,6 @@
 #ifndef SCRIPTEDAUTONOMOUS_H
 #define SCRIPTEDAUTONOMOUS_H
+#include <QPen>
 
 
 
@@ -19,11 +20,10 @@ public:
         ELEVATORDOWN,
         GRABTOTE,
         RELEASETOTE,
-        ROTATERIGHT,
-        ROTATELEFT,
+        ROTATEPOSITIVE,
+        ROTATENEGATIVE,
         NAVX
     };
-
 };
 
 

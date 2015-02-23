@@ -24,20 +24,20 @@ Connector::Connector(Connector::Location location, Type type, string name)
         this->pathToPixmap = ":/Icons/Resources/intConnector.png";
         arg = "INT";
         break;
-     case DOUBLE:
+    case DOUBLE:
         this->pathToPixmap = ":/Icons/Resources/doubleConnector.png";
         arg = "DOUBLE";
         break;
-     case SEQUNTIAL:
+    case SEQUNTIAL:
         if(location == LEFT){
-          this->pathToPixmap = ":/Icons/Resources/connectorIn.png";
+            this->pathToPixmap = ":/Icons/Resources/connectorIn.png";
         }
         if(location == RIGHT){
-          this->pathToPixmap = ":/Icons/Resources/connectorOut.png";
+            this->pathToPixmap = ":/Icons/Resources/connectorOut.png";
         }
 
         break;
-     case STATE:
+    case STATE:
         arg = "ENUM";
         this->pathToPixmap = ":/Icons/Resources/intConnector.png";
         break;
@@ -56,9 +56,9 @@ string Connector::getName()
 string Connector::getValue()
 {
     if(constant != NULL){
-    value = constant->getValue();
+        value = constant->getValue();
     }
-     return value;
+    return value;
 
 }
 Connector::Location Connector::getLocation(){
@@ -113,40 +113,38 @@ void Connector::mousePressEvent(QGraphicsSceneMouseEvent *event)
         globalPos.setX(this->getX()+180);
         globalPos.setY(this->getY()+100);
         selected= true;
-            // for QAbstractScrollArea and derived classes you would use:
-            // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
 
-            QMenu myMenu;
-            if(constant == NULL && type != SEQUNTIAL){
+        QMenu myMenu;
+        if(constant == NULL && type != SEQUNTIAL){
             myMenu.addAction("Add Constant");
-            }
-            if(constant != NULL && type != SEQUNTIAL){
+        }
+        if(constant != NULL && type != SEQUNTIAL){
             myMenu.addAction("Remove Constant");
-            }
-            if(type == SEQUNTIAL && partOfConnection){
-                myMenu.addAction("Remove Connection");
-            }
-            QAction* selectedItem = myMenu.exec(globalPos);
-            if(selectedItem !=NULL && this->type != SEQUNTIAL){
-                if(selectedItem->iconText().toStdString() == "Add Constant"){
-                    if(constant == NULL){
-                        createConstant();
-                    }
-                    constantReady = true;
-                    selected = false;
-                }else if(selectedItem->iconText().toStdString() == "Remove Constant" && constant != NULL){
-                     selected = false;
-                     delete constant;
-                     delete constant->getLine();
-                     constant = NULL;
-
-                 }
-            }else if(type == SEQUNTIAL){
-                if(selectedItem != NULL)
-                {
-                    if(selectedItem ->iconText().toStdString() == "Remove Connection") deleteConnection = true;
+        }
+        if(type == SEQUNTIAL && partOfConnection){
+            myMenu.addAction("Remove Connection");
+        }
+        QAction* selectedItem = myMenu.exec(globalPos);
+        if(selectedItem !=NULL && this->type != SEQUNTIAL){
+            if(selectedItem->iconText().toStdString() == "Add Constant"){
+                if(constant == NULL){
+                    createConstant();
                 }
+                constantReady = true;
+                selected = false;
+            }else if(selectedItem->iconText().toStdString() == "Remove Constant" && constant != NULL){
+                selected = false;
+                delete constant;
+                delete constant->getLine();
+                constant = NULL;
+
             }
+        }else if(type == SEQUNTIAL){
+            if(selectedItem != NULL)
+            {
+                if(selectedItem ->iconText().toStdString() == "Remove Connection") deleteConnection = true;
+            }
+        }
 
     }else{
 
@@ -180,7 +178,7 @@ bool Connector::constantIsReady()
         return NULL;
     }else{
 
-    return constantReady;
+        return constantReady;
     }
 }
 
@@ -216,7 +214,7 @@ bool Connector::shouldDeleteConnection()
 void Connector::setConstantReady()
 {
     if(constant == NULL) createConstant();
-        constantReady = true;
+    constantReady = true;
 
 }
 
@@ -229,14 +227,14 @@ void Connector::createConstant()
 {
     Constant::Location constantLocation;
 
-     switch(location){
-     case TOP:
-         constantLocation = Constant::TOP;
-         break;
-     case LEFT:
-         constantLocation = Constant::LEFT;
-         break;
-     }
+    switch(location){
+    case TOP:
+        constantLocation = Constant::TOP;
+        break;
+    case LEFT:
+        constantLocation = Constant::LEFT;
+        break;
+    }
 
     switch(type){
 

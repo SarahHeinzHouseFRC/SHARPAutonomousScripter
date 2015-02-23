@@ -4,7 +4,7 @@ Connection::Connection(Connector * connectionTO, Connector * connectionFROM)
 {
     this->connectorTO = connectionTO;
     this->connectorFROM = connectionFROM;
-    setLine(connectorTO->getX(), connectorTO->getY(), connectorFROM->getX(),connectorFROM->getY());
+    setLine(connectorTO->getX()+connectorFROM->getPixmapWidth(), connectorTO->getY()+connectorTO->getPixmapHeight()/2, connectorFROM->getX(),connectorFROM->getY()+connectorTO->getPixmapHeight()/2);
     connectorTO->setInConnection();
     connectorFROM->setInConnection();
     inScene = false;
@@ -32,7 +32,6 @@ void Connection::update(){
     if(connectorTO->toBeDeleted() || connectorFROM->toBeDeleted()){
         shouldRemove = true;
     }else if(connectorTO->shouldDeleteConnection() || connectorFROM->shouldDeleteConnection()){
-        printf("Delete called from connection \n");
         shouldRemove = true;
         connectorTO->setConnectionDeleted();
         connectorFROM->setConnectionDeleted();

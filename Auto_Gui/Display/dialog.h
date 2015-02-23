@@ -51,11 +51,12 @@ private:
     void loadGuiElelements();
     string keys[9] = {"ID","Command Timeout","Drive Speed","Elevator Speed","Time Out", "Drive Distance", "Elevator Position","Degree to Rotate","Zero Gyro"};
 
+protected:
+    void resizeEvent(QResizeEvent *);
 
 private slots:
     void on_graphicsView_destroyed();
     void updateMenuManager();
-
     void on_generateButton_released();
     void on_loadButton_released();
     void on_clearButton_released();

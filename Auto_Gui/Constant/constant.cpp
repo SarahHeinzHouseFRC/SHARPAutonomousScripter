@@ -7,7 +7,7 @@ Constant::Constant(AutonomousGuiObject *parent, Type type, Location location):QT
     switch(location){
 
     case TOP:
-            this->setGeometry(parent->getX()-7,parent->getY()-30,35,25);
+        this->setGeometry(parent->getX()-7,parent->getY()-30,35,25);
         break;
 
     case LEFT:
@@ -29,18 +29,17 @@ Constant::Constant(AutonomousGuiObject *parent, Type type, Location location):QT
 
     case INT:
         this->setStyleSheet("border: 4px solid blue");
-    break;
+        break;
 
     case DOUBLE:
         this->setStyleSheet("border: 4px solid orange");
-    break;
+        break;
 
     case STATE:
         this->setStyleSheet("border: 4px solid purple");
-        this->document()->size().width();
-    break;
+        break;
 
- }
+    }
 }
 
 

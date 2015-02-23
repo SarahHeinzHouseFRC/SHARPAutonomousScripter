@@ -3,49 +3,49 @@
 MenuItem::MenuItem(ScriptedAutonomous::CommandType type, QWidget *parent): QLabel(parent)
 {
 
-switch(type){
+    switch(type){
 
-     case ScriptedAutonomous::ScriptedAutonomous::AUTOSTART:
+    case ScriptedAutonomous::ScriptedAutonomous::AUTOSTART:
         pixmap.load(QString::fromStdString(":/Icons/Resources/startAuto.png"));
-     break;
+        break;
     case ScriptedAutonomous::DRIVEFORWARD:
         pixmap.load(QString::fromStdString(":/Icons/Resources/Drive GUI.png"));
-    break;
+        break;
     case ScriptedAutonomous::DRIVEBACKWARD:
         pixmap.load(QString::fromStdString(":/Icons/Resources/driveBack.png"));
-    break;
-    case ScriptedAutonomous::ROTATERIGHT:;
-        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateRight90.png"));
-    break;
-    case ScriptedAutonomous::ROTATELEFT:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateLeft90.png"));
-    break;
+        break;
+    case ScriptedAutonomous::ROTATENEGATIVE:;
+        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateNegative.png"));
+        break;
+    case ScriptedAutonomous::ROTATEPOSITIVE:
+        pixmap.load(QString::fromStdString(":/Icons/Resources/rotatePositive.png"));
+        break;
     case ScriptedAutonomous::TIMEOUT:
         pixmap.load(QString::fromStdString(":/Icons/Resources/Timeout.png"));
-    break;
+        break;
     case ScriptedAutonomous::GRABTOTE:
         pixmap.load(QString::fromStdString(":/Icons/Resources/Arm.png"));
-    break;
+        break;
     case ScriptedAutonomous::RELEASETOTE:
         pixmap.load(QString::fromStdString(":/Icons/Resources/releaseArm.png"));
-    break;
+        break;
     case ScriptedAutonomous::ELEVATORUP:
         pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorUp.png"));;
-    break;
+        break;
     case ScriptedAutonomous::ELEVATORDOWN:
         pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorDown.png"));
-    break;
+        break;
     case ScriptedAutonomous::NAVX:
         pixmap.load(QString::fromStdString(":/Icons/Resources/navX.png"));
-    break;
+        break;
     }
-setPixmap(pixmap);
-this->itemType = type;
-selected = false;
-currentlySelectedMenuItem = false;
-setFrameShape(Box);
-setFrameShadow(Raised);
-setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+    setPixmap(pixmap);
+    this->itemType = type;
+    selected = false;
+    currentlySelectedMenuItem = false;
+    setFrameShape(Box);
+    setFrameShadow(Raised);
+    setAlignment(Qt::AlignCenter | Qt::AlignCenter);
 }
 
 bool MenuItem::isSelected()
@@ -106,7 +106,7 @@ void MenuItem::setNotSelected()
 void MenuItem::drawBox()
 {
     if(currentlySelectedMenuItem){
-   // setStyleSheet("border: 3px solid red");
+        // setStyleSheet("border: 3px solid red");
         setFrameShadow(Raised);
     }else{
 

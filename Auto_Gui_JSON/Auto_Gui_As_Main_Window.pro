@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     Objects/connection.cpp \
     Objects/commandblock.cpp \
     Objects/autonomousguiobject.cpp \
-    ScriptedAutonomous.cpp
+    ScriptedAutonomous.cpp \
+    Managers/buildmenu.cpp \
+    settingsdialog.cpp
 
 HEADERS  += \
     Constant/enumeratedconstant.h \
@@ -38,9 +40,12 @@ HEADERS  += \
     Objects/connection.h \
     Objects/commandblock.h \
     Objects/autonomousguiobject.h \
-    ScriptedAutonomous.h
+    ScriptedAutonomous.h \
+    Managers/buildmenu.h \
+    settingsdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    settingsdialog.ui
 
 RESOURCES += \
     Resources.qrc \

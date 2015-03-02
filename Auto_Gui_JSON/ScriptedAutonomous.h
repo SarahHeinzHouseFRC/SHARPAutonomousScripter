@@ -9,31 +9,33 @@ using namespace std;
 
 class ScriptedAutonomous{
 
-      struct JsonCommandBlock{
-      int ID;
-      string relativeRobotClass;
-      string pathToPixmap;
-      string menuGroup;
-      vector<jsonConnector> connectors;
-    };
+
+
+public:
+
+
     struct JsonConnector{
         int type;
         int location;
+        string name;
         string pathToPixmap;
     };
-    struct jsonMenuItem{
-        string name;
-        string order;
-        int relativeID;
-    };
 
-public:
+    struct JsonCommandBlock{
+    int ID;
+    string relativeRobotClass;
+    string pathToPixmap;
+    vector<JsonConnector*> * connectors = new vector<JsonConnector*>();
+    };
+    struct JsonMenuGroup{
+        string name;
+        vector<int> *menuGroupIDs = new vector<int>();
+    };
 
     ScriptedAutonomous();
     void loadJsonCommands();
     void loadJsonPreferences();
-    unordered_multimap<int,JsonCommandBlock *> loadedCommandBlocks;
-
+    void setSettings();
 
 
     enum CommandType{
@@ -51,7 +53,14 @@ public:
         ROTATENEGATIVE,
         NAVX
     };
+    static unordered_multimap<int,JsonCommandBlock*> loadedCommandBlocks;
+    static unordered_multimap<string, JsonMenuGroup*> loadedMenus;
+    static string ftpAddress;
+    static string localPath;
+    static string usbPath;
 
+private:
+     Json::Value root;
 
 };
 

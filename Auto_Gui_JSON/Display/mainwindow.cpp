@@ -11,24 +11,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    autonomous.loadJsonCommands();
 
     ui->setupUi(this);
     buildView = new BuildCanvas(this, &menuManagerMain);
     buildScene = new QGraphicsScene(buildView);
     buildView->setScene(buildScene);
-    buildView->setGeometry(10,this->height()*.1,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
+    buildView->setGeometry(10,this->height()*.2,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
     buildView->setSceneRect(10,120,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
     buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     buildView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-
-
     loadGuiElelements();
 
-    connect(ui->menuDeploy->actions().at(0), SIGNAL(triggered()),this,SLOT(on_generateButton_released()));
-    connect(ui->menuFile->actions().at(0), SIGNAL(triggered()),this,SLOT(on_loadButton_released()));
-
-
+    connect(ui->menuDeploy->actions().at(0), SIGNAL(triggered()),this,SLOT(generate()));
+    connect(ui->menuFile->actions().at(0), SIGNAL(triggered()),this,SLOT(loadAutoFile()));
+    connect(ui->menuDeploy->actions().at(4), SIGNAL(triggered()),this,SLOT(openSettingsMenu()));
 }
 
 MainWindow::~MainWindow()
@@ -44,42 +42,20 @@ void MainWindow::loadGuiElelements()
     connect(timer, SIGNAL(timeout()), this, SLOT(updateMenuManager()));
     timer->start(10);
 
-    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::DRIVEFORWARD, ui->driveTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::DRIVEBACKWARD,ui->driveTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATEPOSITIVE, ui->driveTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ROTATENEGATIVE,ui->driveTab));
-
-    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::GRABTOTE, ui->armTab));
-    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::RELEASETOTE, ui->armTab));
-
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORUP, ui->elevatorTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::ELEVATORDOWN, ui->elevatorTab));
-    toolBoxItems.push_back(new MenuItem( ScriptedAutonomous::NAVX, ui->sensorTab));
-
-    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::AUTOSTART, ui->startStopTab));
-
-    toolBoxItems.push_back(new MenuItem(ScriptedAutonomous::TIMEOUT,ui->timeoutTab));
-
-
-
-    menuManagerMain.changeCurrentMenu(&toolBoxItems);
-
-    int k = 0;
-    for(int i = 0; i < toolBoxItems.size(); i++)
+    typedef unordered_multimap<string, ScriptedAutonomous::JsonMenuGroup*>::iterator it;
+    for(it iterator= autonomous.loadedMenus.begin(); iterator != autonomous.loadedMenus.end(); iterator++)
     {
-        if(i > 0){
-            if(toolBoxItems.at(i)->parent() != toolBoxItems.at(i-1)->parent()) k = 0;}
+        string groupName = iterator->first;
+        ScriptedAutonomous::JsonMenuGroup* menu = iterator->second;
 
-        toolBoxItems.at(i)->setGeometry(10+(k*80),10,61,61);
-        k++;
+        ui->toolBox->addTab(new BuildMenu(menu,&autonomous.loadedCommandBlocks,&menuManagerMain),QString::fromStdString(groupName));
 
     }
-
 }
 
 void MainWindow::resizeEvent(QResizeEvent * event)
 {
-    buildView->setGeometry(10,150,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
+    buildView->setGeometry(10,175,geometry().width() -20,geometry().height() - ui->toolBox->geometry().height());
     buildView->setSceneRect(10,150,geometry().width() -20 ,geometry().height() - ui->toolBox->geometry().height() - 50);
     QWidget::resizeEvent(event);
 }
@@ -95,33 +71,42 @@ void MainWindow::updateMenuManager(){
     buildView->updateCanvas();
 }
 
-void MainWindow::on_generateButton_released()
+void MainWindow::generate()
 {
 
     Json::Value root(Json::objectValue);
-    ofstream out("BUTTS.json", ofstream::out);
+    ofstream out(autonomous.localPath, ofstream::out);
     Json::Value commands(Json::arrayValue);
 
-    root["Autonomous Name"] =  ui->fileNameTextEdit->text().toStdString();
+    root["Autonomous Name"] =  ui->fileNameEditText->text().toStdString();
 
     vector<CommandBlock* > orderedCommands = buildView->orderConnections();
 
     for(CommandBlock * currentCommand : orderedCommands)
     {
         printf("About to add commands");
+
+
         commands.append(currentCommand->toJson());
     }
     root["Commands"] = commands;
+
 
     out << root;
     out.close();
 
 }
 
-void MainWindow::on_loadButton_released()
+void MainWindow::openSettingsMenu()
 {
 
-    QMessageBox warningMessage;
+    settingsDialog.show();
+}
+
+void MainWindow::loadAutoFile()
+{
+
+    /*QMessageBox warningMessage;
     warningMessage.setText("Loading a file will delete your current workspace.");
     warningMessage.setInformativeText("Do you want to load file?");
     warningMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -221,7 +206,7 @@ void MainWindow::on_loadButton_released()
             }
             buildView->addCommandsToCanvas(&commandsToSendToCanvas);
         }
-    }
+    }*/
 }
 
 

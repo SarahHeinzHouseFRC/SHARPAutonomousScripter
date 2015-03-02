@@ -19,6 +19,8 @@
 #include<QMessageBox>
 #include "ScriptedAutonomous.h"
 #include <QMainWindow>
+#include "Managers/buildmenu.h"
+#include "settingsdialog.h"
 
 
 
@@ -50,16 +52,19 @@ private:
     vector<vector<Connector*> > connections;
     void loadGuiElelements();
     string keys[9] = {"ID","Command Timeout","Drive Speed","Elevator Speed","Time Out", "Drive Distance", "Elevator Position","Degree to Rotate","Zero Gyro"};
-
+    ScriptedAutonomous autonomous;
+    SettingsDialog settingsDialog;
 protected:
     void resizeEvent(QResizeEvent *);
 
 private slots:
     void on_graphicsView_destroyed();
-    void updateMenuManager();
-    void on_generateButton_released();
-    void on_loadButton_released();
     void on_clearButton_released();
+    void updateMenuManager();
+    void loadAutoFile();
+    void generate();
+    void openSettingsMenu();
+
 };
 
 #endif // MAINWINDOW_H

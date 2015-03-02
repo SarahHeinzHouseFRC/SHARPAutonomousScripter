@@ -4,6 +4,7 @@
 #include <string>
 #include <QMouseEvent>
 #include "Constant/constant.h"
+#include "ScriptedAutonomous.h"
 using namespace std;
 class Connector : public AutonomousGuiObject
 {
@@ -25,10 +26,11 @@ public:
         DOUBLE,
         STRING,
         SEQUNTIAL,
-        STATE
+        ENUM
     };
 
-    Connector(Connector::Location location, Type, string name);
+    Connector(ScriptedAutonomous::JsonConnector* connectorFromJson);
+    Connector(Type,Location);
     string getName();
     string getValue();
     Connector::Location getLocation();

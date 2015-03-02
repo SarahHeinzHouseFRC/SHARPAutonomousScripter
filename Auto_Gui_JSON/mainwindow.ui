@@ -40,38 +40,8 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>-1</number>
     </property>
-    <widget class="QWidget" name="driveTab">
-     <attribute name="title">
-      <string>Drive</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="armTab">
-     <attribute name="title">
-      <string>Arm</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="elevatorTab">
-     <attribute name="title">
-      <string>Elevator</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="sensorTab">
-     <attribute name="title">
-      <string>Sensors</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="timeoutTab">
-     <attribute name="title">
-      <string>Timeout</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="startStopTab">
-     <attribute name="title">
-      <string>Start/Stop</string>
-     </attribute>
-    </widget>
    </widget>
    <widget class="QTextEdit" name="debug">
     <property name="geometry">
@@ -83,11 +53,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="fileNameTextEdit">
+   <widget class="QLineEdit" name="fileNameEditText">
     <property name="geometry">
      <rect>
       <x>720</x>
-      <y>60</y>
+      <y>80</y>
       <width>113</width>
       <height>27</height>
      </rect>

@@ -11,7 +11,7 @@ using namespace std;
 class CommandBlock : public AutonomousGuiObject
 {
 public:
-    CommandBlock(ScriptedAutonomous::CommandType);
+    CommandBlock(ScriptedAutonomous::JsonCommandBlock *commandFromJson);
     void getInputs();
     unordered_multimap<string,string>* sendOutputs();
     void setUpConnectors(int x, int y);
@@ -33,6 +33,7 @@ private:
     ScriptedAutonomous::CommandType type;
     //QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     QPointF movingPoint;
+    string relativeRobotClass;
 
 protected:
     unordered_multimap<string,string> commandIO;

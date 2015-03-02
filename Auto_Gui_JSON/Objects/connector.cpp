@@ -2,8 +2,55 @@
 #include <QMenu>
 #include <QToolTip>
 
-Connector::Connector(Connector::Location location, Type type, string name)
+Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
 {
+
+    Location location;
+    Type type;
+
+    switch(connectorFromJson->location)
+    {
+
+        case 1:
+            location = Connector::RIGHT;
+            break;
+        case 2:
+            location = Connector::TOP;
+            break;
+        case 3:
+            location = Connector::LEFT;
+            break;
+        case 4 :
+            location = Connector::BOTTOM;
+            break;
+        default:
+            break;
+
+    }
+    string arg;
+    switch(connectorFromJson->type)
+    {
+
+        case 1:
+            type = Connector::INT;
+             arg = "INT";
+            break;
+        case 2:
+            type = Connector::DOUBLE;
+            arg = "DOUBLE";
+            break;
+        case 3:
+            type = Connector::ENUM;
+            arg = "ENUM";
+            break;
+        case 4 :
+            type = Connector::BOOL;
+            break;
+        default:
+            break;
+
+    }
+    this->setToolTip(QString::fromStdString(name + " "+ arg));
 
     this->location = location;
     selected = false;
@@ -13,36 +60,40 @@ Connector::Connector(Connector::Location location, Type type, string name)
     constant = NULL;
     partOfConnection = false;
     this->type = type;
-    this->name = name;
+    this->name = connectorFromJson->name;
+    this->pathToPixmap = connectorFromJson->pathToPixmap;
     setAcceptHoverEvents(true);
     setFlag(ItemStacksBehindParent);
 
-    string arg;
-    switch(type){
+}
 
-    case INT:
-        this->pathToPixmap = ":/Icons/Resources/intConnector.png";
-        arg = "INT";
-        break;
-    case DOUBLE:
-        this->pathToPixmap = ":/Icons/Resources/doubleConnector.png";
-        arg = "DOUBLE";
-        break;
-    case SEQUNTIAL:
-        if(location == LEFT){
-            this->pathToPixmap = ":/Icons/Resources/connectorIn.png";
-        }
-        if(location == RIGHT){
-            this->pathToPixmap = ":/Icons/Resources/connectorOut.png";
-        }
-
-        break;
-    case STATE:
-        arg = "ENUM";
-        this->pathToPixmap = ":/Icons/Resources/intConnector.png";
-        break;
+Connector::Connector(Type type, Location location)
+{
+    this->type = type;
+    this->location = location;
+    if(type == SEQUNTIAL && location == RIGHT)
+    {
+        pathToPixmap = ":/Icons/Resources/connectorOut";
+        name = "Right Sequential";
     }
-    this->setToolTip(QString::fromStdString(name + " "+ arg));
+    else if (location == LEFT && type == SEQUNTIAL)
+    {
+            pathToPixmap = ":/Icons/Resources/connectorIn";
+            name = "Left Sequential";
+
+
+    }
+
+    this->location = location;
+    selected = false;
+    constantReady = false;
+    shouldRemove = false;
+    deleteConnection = false;
+    constant = NULL;
+    partOfConnection = false;
+    this->type = type;
+    setAcceptHoverEvents(true);
+    setFlag(ItemStacksBehindParent);
 
 }
 
@@ -63,9 +114,7 @@ string Connector::getValue()
 }
 Connector::Location Connector::getLocation(){
 
-
     return location;
-
 
 }
 
@@ -244,7 +293,7 @@ void Connector::createConstant()
     case DOUBLE:
         this->constant = new Constant(this, Constant::DOUBLE, constantLocation);
         break;
-    case STATE:
+    case ENUM:
         this->constant = new Constant(this, Constant::STATE, constantLocation);
         break;
 
@@ -255,6 +304,7 @@ void Connector::createConstant()
 Connector::~Connector(){
 
 
+    if(constant != NULL);
     delete constant;
 
 }

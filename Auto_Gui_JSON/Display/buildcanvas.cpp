@@ -14,8 +14,8 @@ void BuildCanvas::mouseReleaseEvent(QMouseEvent *event)
 
     if(menuManager->itemIsSelected()){
         CommandBlock * command;
-        command = new CommandBlock(menuManager->getCurrentlySelectedItem()->getType());
-        if(menuManager->getCurrentlySelectedItem()->getType() == ScriptedAutonomous::AUTOSTART){
+        command = new CommandBlock(menuManager->getCurrentlySelectedItem()->getRealtiveCommand());
+        if(menuManager->getCurrentlySelectedItem()->getID() == 0){
             autoStart = command;
         }
         command->setXY(pt.x(),pt.y());

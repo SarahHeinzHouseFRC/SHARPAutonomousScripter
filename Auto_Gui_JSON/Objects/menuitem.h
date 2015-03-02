@@ -9,25 +9,27 @@ class MenuItem : public QLabel
 {
 public:
 
-    MenuItem(ScriptedAutonomous::CommandType, QWidget *parent);
+    MenuItem(ScriptedAutonomous::JsonCommandBlock *relativeCommand, QWidget *parent);
+    MenuItem(QWidget *parent);
     bool isSelected();
     void setCurrentlySelectedMenuItem();
     void setNotCurrentlySelectedMenuItem();
     void setNotSelected();
     void drawBox();
     QPixmap pixmap;
-    ScriptedAutonomous::CommandType getType();
+    ScriptedAutonomous::JsonCommandBlock *getRealtiveCommand();
 
-
+    int getID();
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseHoverEvent();
     bool selected;
     bool currentlySelectedMenuItem;
+    ScriptedAutonomous::JsonCommandBlock* relativeCommand;
 
 private:
-    ScriptedAutonomous::CommandType itemType;
+    int ID;
 
 };
 

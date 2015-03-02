@@ -1,51 +1,31 @@
 #include "menuitem.h"
 
-MenuItem::MenuItem(ScriptedAutonomous::CommandType type, QWidget *parent): QLabel(parent)
+MenuItem::MenuItem(ScriptedAutonomous::JsonCommandBlock* relativeCommand, QWidget *parent): QLabel(parent)
 {
 
-    switch(type){
-
-    case ScriptedAutonomous::ScriptedAutonomous::AUTOSTART:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/startAuto.png"));
-        break;
-    case ScriptedAutonomous::DRIVEFORWARD:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/Drive GUI.png"));
-        break;
-    case ScriptedAutonomous::DRIVEBACKWARD:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/driveBack.png"));
-        break;
-    case ScriptedAutonomous::ROTATENEGATIVE:;
-        pixmap.load(QString::fromStdString(":/Icons/Resources/rotateNegative.png"));
-        break;
-    case ScriptedAutonomous::ROTATEPOSITIVE:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/rotatePositive.png"));
-        break;
-    case ScriptedAutonomous::TIMEOUT:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/Timeout.png"));
-        break;
-    case ScriptedAutonomous::GRABTOTE:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/Arm.png"));
-        break;
-    case ScriptedAutonomous::RELEASETOTE:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/releaseArm.png"));
-        break;
-    case ScriptedAutonomous::ELEVATORUP:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorUp.png"));;
-        break;
-    case ScriptedAutonomous::ELEVATORDOWN:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/elevatorDown.png"));
-        break;
-    case ScriptedAutonomous::NAVX:
-        pixmap.load(QString::fromStdString(":/Icons/Resources/navX.png"));
-        break;
-    }
+    this->relativeCommand = relativeCommand;
+    pixmap.load(QString::fromStdString(relativeCommand->pathToPixmap));
     setPixmap(pixmap);
-    this->itemType = type;
+    this->ID = relativeCommand->ID;
     selected = false;
     currentlySelectedMenuItem = false;
     setFrameShape(Box);
     setFrameShadow(Raised);
     setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+}
+MenuItem::MenuItem(QWidget * parent): QLabel(parent)
+{
+
+    this->ID = 1;
+    pixmap.load(QString::fromStdString(":/Icons/Resources/startAuto.png"));
+    setPixmap(pixmap);
+    selected = false;
+    currentlySelectedMenuItem = false;
+    setFrameShape(Box);
+    setFrameShadow(Raised);
+    setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+
+
 }
 
 bool MenuItem::isSelected()
@@ -75,10 +55,10 @@ void MenuItem::mouseReleaseEvent(QMouseEvent *event)
 
 }
 
-ScriptedAutonomous::CommandType MenuItem::getType()
+int MenuItem::getID()
 {
 
-    return itemType;
+    return ID;
 
 }
 
@@ -116,5 +96,11 @@ void MenuItem::drawBox()
 
     }
 
+}
+
+ScriptedAutonomous::JsonCommandBlock* MenuItem::getRealtiveCommand()
+{
+
+    return relativeCommand;
 }
 

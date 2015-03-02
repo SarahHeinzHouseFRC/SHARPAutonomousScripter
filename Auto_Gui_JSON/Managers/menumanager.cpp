@@ -2,16 +2,18 @@
 
 MenuManager::MenuManager()
 {
-
+anItemIsSelected = false;
 
 
 }
 void MenuManager::updateSelectedItem(){
 
+
     int k = 0;
     std::reverse(currentMenu->begin(),currentMenu->end());
     for(int i = 0; i < currentMenu->size(); i++)
     {
+
         if(currentMenu->at(i)->isSelected()){
             k++;
             anItemIsSelected = true;
@@ -53,5 +55,12 @@ MenuItem *MenuManager::getCurrentlySelectedItem()
 {
 
     return currentlySelectedItem;
+}
+
+void MenuManager::addItemToUniversalMenu(MenuItem* item)
+{
+
+    currentMenu->push_back(item);
+
 }
 

@@ -14,6 +14,7 @@ public:
     void changeCurrentMenu(std::vector<MenuItem*> *menu);
     bool itemIsSelected();
     MenuItem* getCurrentlySelectedItem();
+    void addItemToUniversalMenu(MenuItem *item);
 
 
 private:

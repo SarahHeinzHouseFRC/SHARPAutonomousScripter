@@ -1,81 +1,25 @@
 #include "commandblock.h"
 
 
-CommandBlock::CommandBlock(ScriptedAutonomous::CommandType type): AutonomousGuiObject(){
+CommandBlock::CommandBlock(ScriptedAutonomous::JsonCommandBlock* commandFromJson): AutonomousGuiObject(){
  // setFlags(ItemIsMovable | ItemSendsScenePositionChanges);
 
 
-    switch(type){
-
-    case ScriptedAutonomous::AUTOSTART:
-        setPixmap(":/Icons/Resources/startAuto.png");
-        ID =0;
-        break;
-    case ScriptedAutonomous::DRIVEFORWARD:
-        connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Drive Distance"));
-        connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Command Timeout"));
-        setPixmap(":/Icons/Resources/Drive GUI.png");
-
-        ID = 1;
-        break;
-    case ScriptedAutonomous::DRIVEBACKWARD:
-        connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Drive Distance"));
-        connectors.push_back(new Connector( Connector::TOP,Connector::DOUBLE, "Command Timeout"));
-
-        setPixmap(":/Icons/Resources/driveBack.png");
-        ID = -1;
-        break;
+    this->ID = commandFromJson->ID;
+    setPixmap(commandFromJson->pathToPixmap);
+    this->relativeRobotClass = commandFromJson->relativeRobotClass;
 
 
-    case ScriptedAutonomous::ROTATEPOSITIVE:
-        connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Degree to Rotate"));
-        connectors.push_back(new Connector( Connector::LEFT,Connector::DOUBLE, "Command Timeout"));
-
-        setPixmap(":/Icons/Resources/rotatePositive.png");
-        ID = 2;
-
-        break;
-
-    case ScriptedAutonomous::ROTATENEGATIVE:
-        connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Degree to Rotate"));
-        connectors.push_back(new Connector( Connector::LEFT,Connector::DOUBLE, "Command Timeout"));
-        setPixmap(":/Icons/Resources/rotateNegative.png");
-        ID = -2;
-
-        break;
-
-    case ScriptedAutonomous::TIMEOUT:
-        connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Time Out"));
-        setPixmap(":/Icons/Resources/Timeout.png");
-        ID = 5;
-        break;
-    case ScriptedAutonomous::GRABTOTE:
-        setPixmap(":/Icons/Resources/Arm.png");
-        ID =-6;
-        break;
-    case ScriptedAutonomous::RELEASETOTE:
-        setPixmap(":/Icons/Resources/releaseArm.png");
-        ID = 6;
-        break;
-    case ScriptedAutonomous::ELEVATORUP:
-        connectors.push_back(new Connector( Connector::TOP,Connector::STATE, "Elevator Position"));
-        setPixmap(":/Icons/Resources/elevatorUp.png");
-        ID = 7;
-        break;
-    case ScriptedAutonomous::ELEVATORDOWN:
-        connectors.push_back(new Connector( Connector::TOP,Connector::STATE, "Elevator Position"));
-        setPixmap(":/Icons/Resources/elevatorDown.png");
-        ID = -7;
-        break;
-    case ScriptedAutonomous::NAVX:
-        setPixmap(":/Icons/Resources/navX.png");
-        connectors.push_back(new Connector( Connector::TOP,Connector::INT, "Zero Gyro"));
-        ID = 8;
-        break;
+    for(ScriptedAutonomous::JsonConnector* currentConnector: *commandFromJson->connectors)
+    {
+        connectors.push_back(new Connector(currentConnector));
     }
-    connectors.push_back(new Connector( Connector::RIGHT,Connector::SEQUNTIAL, "Sequence To"));
-    if(type != ScriptedAutonomous::AUTOSTART) connectors.push_back(new Connector( Connector::LEFT,Connector::SEQUNTIAL, "Sequence From"));
-    this->type = type;
+    if(ID !=0)
+        connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::LEFT));
+    connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::RIGHT));
+
+    printf("%d", connectors.size());
+
 }
 void CommandBlock::getInputs(){
 
@@ -119,7 +63,7 @@ void CommandBlock::setUpConnectors(int x, int y)
         case Connector::LEFT:
             l++;
             currentConnector->setParentItem(this);
-            currentConnector->setXY(x-9,(y+37*r));
+            currentConnector->setXY(x-9,(y+37*l));
 
             if(currentConnector->getType() == Connector::SEQUNTIAL){
                 leftSequential= currentConnector;
@@ -250,14 +194,17 @@ Json::Value CommandBlock::toJson()
 {
     Json::Value commandAsJason;
 
-    commandAsJason["Type"] = getID();
 
     for(Connector* currentConnector: connectors)
     {
         if(currentConnector->getType() != Connector::SEQUNTIAL)
-         commandAsJason[currentConnector->getName()] =  std::stoi(currentConnector->getValue());
+        {
+
+           commandAsJason[currentConnector->getName()] =  std::stoi(currentConnector->getValue());
+        }
 
     }
+    commandAsJason["Robot Class"] = relativeRobotClass;
 
     return commandAsJason;
 

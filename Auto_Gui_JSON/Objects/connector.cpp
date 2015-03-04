@@ -7,6 +7,7 @@ Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
 
     Location location;
     Type type;
+    name = connectorFromJson->name;
 
     switch(connectorFromJson->location)
     {
@@ -267,6 +268,18 @@ void Connector::setConstantReady()
 
 }
 
+Json::Value Connector::toJson()
+{
+    Json::Value value;
+
+    if(constant ==NULL)
+        value[name] = NULL;
+    else
+        value[name] = constant->getValue();
+
+    return value;
+}
+
 void Connector::setConnectionDeleted(){
 
     deleteConnection = false;
@@ -294,7 +307,7 @@ void Connector::createConstant()
         this->constant = new Constant(this, Constant::DOUBLE, constantLocation);
         break;
     case ENUM:
-        this->constant = new Constant(this, Constant::STATE, constantLocation);
+        this->constant = new Constant(this,Constant::STATE ,constantLocation);
         break;
 
     }

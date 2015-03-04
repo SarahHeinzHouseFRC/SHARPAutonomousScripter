@@ -75,7 +75,7 @@ void MainWindow::generate()
 {
 
     Json::Value root(Json::objectValue);
-    ofstream out(autonomous.localPath, ofstream::out);
+    ofstream out(autonomous.localPath + "/"+ ui->fileNameEditText->text().toStdString(), ofstream::out);
     Json::Value commands(Json::arrayValue);
 
     root["Autonomous Name"] =  ui->fileNameEditText->text().toStdString();
@@ -84,13 +84,10 @@ void MainWindow::generate()
 
     for(CommandBlock * currentCommand : orderedCommands)
     {
-        printf("About to add commands");
-
-
         commands.append(currentCommand->toJson());
+
     }
     root["Commands"] = commands;
-
 
     out << root;
     out.close();
@@ -105,8 +102,8 @@ void MainWindow::openSettingsMenu()
 
 void MainWindow::loadAutoFile()
 {
-
-    /*QMessageBox warningMessage;
+    vector<CommandBlock*> commandsToSendToCanvas;
+    QMessageBox warningMessage;
     warningMessage.setText("Loading a file will delete your current workspace.");
     warningMessage.setInformativeText("Do you want to load file?");
     warningMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -114,101 +111,78 @@ void MainWindow::loadAutoFile()
 
     if(choice == QMessageBox::Yes){
 
+        ofstream myfile;
+
+
         buildView->wipe();
 
-        std::unordered_map<std::string,vector<string>*> commandsIN;
-
-        string value;
         string fileName = QFileDialog::getOpenFileName(this,
-                                                       tr("Open CSV File"), "/home/lucas", tr("CSV Files (*.csv)")).toStdString();
+                                                       tr("Open JSON File"), "/home/lucas", tr("JSON Files (*.json)")).toStdString();
         if(!fileName.empty()){
-            for(int i = 0; i < sizeof(keys)/sizeof(keys[0]); i++){
-                io::CSVReader<1> in(fileName);
-                in.read_header(io::ignore_extra_column,string(keys[i]));
-                commandsIN.insert(std::make_pair<string, vector<string>*>(string(keys[i]),new vector<string>(sizeof(keys)/sizeof(keys[0]))));
-                while(in.read_row(value)){
-                    std::unordered_map<std::string,vector<string>* >::const_iterator place  = commandsIN.find(std::string(keys[i]));
-                    place->second->push_back(value);
-                }
-            }
-            vector <CommandBlock *> commandsToSendToCanvas;
-            int x = 10;
+
+            int x = 80;
             int y = 250;
 
-            commandsToSendToCanvas.push_back(new CommandBlock(ScriptedAutonomous::AUTOSTART));
-            commandsToSendToCanvas.at(0)->setXY(x,y);
-            commandsToSendToCanvas.at(0)->setUpConnectors(x,y);
+            Json::Value root;
+            Json::Reader reader;
+            Json::Value autonomousIn(Json::arrayValue);
+            std::ifstream fileAsString(fileName, std::ifstream::binary);
 
-            std::unordered_map<std::string,vector<string>* >::const_iterator place = commandsIN.find("ID");
+            bool suc = reader.parse(fileAsString,root);
 
-            for(int i =0; i < place->second->size();i++){
+            if(!suc)
+            {
+                printf(reader.getFormatedErrorMessages().c_str());
 
-                if(!place->second->at(i).empty()){
-                    int currentID = atoi(place->second->at(i).c_str());
-                    CommandBlock* newCommand;
-                    string value;
-                    vector<string*> constantKeys;
-                    x+=100;
+            }
 
-                    switch(currentID){
-                    case(1):
-                        newCommand = new CommandBlock(ScriptedAutonomous::DRIVEFORWARD);
-                        break;
-                    case(-1):
-                        newCommand = new CommandBlock(ScriptedAutonomous::DRIVEBACKWARD);
-                        break;
-                    case(2):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATEPOSITIVE);
-                        break;
-                    case(-2):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ROTATENEGATIVE);
-                        break;
-                    case(5):
-                        newCommand = new CommandBlock(ScriptedAutonomous::TIMEOUT);
-                        break;
-                    case(6):
-                        newCommand = new CommandBlock(ScriptedAutonomous::RELEASETOTE);
-                        break;
-                    case(-6):
-                        newCommand = new CommandBlock(ScriptedAutonomous::GRABTOTE);
-                        break;
-                    case(7):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORUP);
-                        break;
-                    case(-7):
-                        newCommand = new CommandBlock(ScriptedAutonomous::ELEVATORDOWN);
-                        break;
-                    case(8):
-                        newCommand = new CommandBlock(ScriptedAutonomous::NAVX);
-                        break;
-                    default:
-                        break;
-                    }
+            autonomousIn= root["Commands"];
 
-                    newCommand->setXY(x,y);
-                    newCommand->setUpConnectors(x,y);
-                    for(int k = 0; k < newCommand->getConnectors()->size(); k++){
 
-                        Connector* currentConnector = newCommand->getConnectors()->at(k);
-                        if(currentConnector->getName().find("Sequence") == std::string::npos){
-                            ui->debug->setText(QString::fromStdString(currentConnector->getName()));
-                            constantKeys.push_back(new string(currentConnector->getName()));
-                        }
-                        for(string* key : constantKeys){
-                            std::unordered_map<std::string,vector<string>* >::const_iterator newPlace  = commandsIN.find(std::string(*key));
-                            value = newPlace->second->at(i);
-                            newCommand->getConnectorByName(*key)->setConstantReady();
-                            newCommand->getConnectorByName(*key)->getConstant()->setText(QString::fromStdString(value));
+            //add startAuto commands
+            CommandBlock * autoCommand = new CommandBlock(autonomous.loadedCommandBlocks.find(0)->second);
+            autoCommand->setXY(10,250);
+            autoCommand->setUpConnectors(10, 250);
+            commandsToSendToCanvas.push_back(autoCommand);
+
+            int i = 0;
+            for(Json::Value command: autonomousIn)
+            {
+                i++;
+                int ID = command["ID"].asInt();
+                CommandBlock * newCommandBlock = new CommandBlock(autonomous.loadedCommandBlocks.find(ID)->second);
+                Json::Value parameters = new Json::Value(Json::arrayValue);
+                parameters = command["Parameters"];
+                newCommandBlock->setXY(x*i,y);
+                newCommandBlock->setUpConnectors(x*i,y);
+
+
+                for(Connector *currentConnector : *newCommandBlock->getConnectors())
+                {
+                    if(currentConnector->getName().find("Sequential") == std::string::npos)
+                    {
+                        for(Json::Value value : parameters)
+                        {
+                            currentConnector->setConstantReady();
+
+
+                            if(!value[currentConnector->getName()].isNull()){
+
+                                currentConnector->getConstant()->setText(QString::fromStdString(value[currentConnector->getName()].asString()));
+
+                            }
+
                         }
                     }
-                    commandsToSendToCanvas.push_back(newCommand);
                 }
+                commandsToSendToCanvas.push_back(newCommandBlock);
             }
             buildView->addCommandsToCanvas(&commandsToSendToCanvas);
-        }
-    }*/
-}
 
+        }
+    }
+
+}
 
 void MainWindow::on_clearButton_released()
 {

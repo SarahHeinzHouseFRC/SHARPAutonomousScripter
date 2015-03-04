@@ -60,3 +60,9 @@ QGraphicsLineItem *Constant::getLine()
 
     return line;
 }
+
+void Constant::setValue(std::string value)
+{
+
+   setText(QString::fromStdString(value));
+}

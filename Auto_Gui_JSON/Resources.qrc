@@ -18,6 +18,8 @@
         <file>Resources/navX.png</file>
         <file>Resources/rotateNegative.png</file>
         <file>Resources/rotatePositive.png</file>
+        <file>Resources/driveAtSpeed.png</file>
+        <file>Resources/enumConnector.png</file>
     </qresource>
     <qresource prefix="/scripts"/>
 </RCC>

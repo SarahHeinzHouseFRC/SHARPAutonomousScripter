@@ -75,7 +75,7 @@ void ScriptedAutonomous::loadJsonCommands(){
 
     }
 
-    setSettings();
+    //setSettings();
     loadJsonPreferences();
 
 }

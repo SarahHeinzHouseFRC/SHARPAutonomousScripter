@@ -5,7 +5,6 @@
 class Constant : public QTextEdit
 {
 public:
-
     enum Type{
         INT,
         DOUBLE,
@@ -19,12 +18,13 @@ public:
     Constant(AutonomousGuiObject *parent, Type type, Location location);
     bool canBeAdded();
     std::string getValue();
-    Type type;
     void setLine(QGraphicsLineItem* line);
     QGraphicsLineItem* getLine();
+    void setValue(std::string value);
 
 private:
     QGraphicsLineItem * line;
+    Type type;
 };
 
 #endif // CONSTANT_H

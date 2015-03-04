@@ -35,7 +35,7 @@ public:
     string getValue();
     Connector::Location getLocation();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    Constant * getConstant();
+    Constant *getConstant();
     bool constantIsReady();
     void setInConnection();
     bool isPartOfConnection();
@@ -43,6 +43,7 @@ public:
     Type getType();
     bool shouldDeleteConnection();
     void setConstantReady();
+    Json::Value toJson();
 
 
 
@@ -63,10 +64,6 @@ private:
     string name;
     bool deleteConnection;
     void createConstant();
-
-
-
-
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

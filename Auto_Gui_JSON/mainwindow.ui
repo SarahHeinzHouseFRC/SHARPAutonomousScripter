@@ -20,8 +20,8 @@
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
+      <x>810</x>
+      <y>20</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -35,7 +35,7 @@
      <rect>
       <x>150</x>
       <y>10</y>
-      <width>421</width>
+      <width>651</width>
       <height>111</height>
      </rect>
     </property>
@@ -43,21 +43,11 @@
      <number>-1</number>
     </property>
    </widget>
-   <widget class="QTextEdit" name="debug">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>104</width>
-      <height>78</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="fileNameEditText">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>80</y>
+      <x>20</x>
+      <y>10</y>
       <width>113</width>
       <height>27</height>
      </rect>

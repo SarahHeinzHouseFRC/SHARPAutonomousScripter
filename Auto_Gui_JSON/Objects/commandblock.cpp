@@ -6,9 +6,9 @@ CommandBlock::CommandBlock(ScriptedAutonomous::JsonCommandBlock* commandFromJson
 
 
     this->ID = commandFromJson->ID;
+
     setPixmap(commandFromJson->pathToPixmap);
     this->relativeRobotClass = commandFromJson->relativeRobotClass;
-
 
     for(ScriptedAutonomous::JsonConnector* currentConnector: *commandFromJson->connectors)
     {
@@ -148,11 +148,9 @@ void CommandBlock::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 }
                 this->setToBeDeleted();
             }else if(selectedItem->iconText().toStdString() == "Switch Sequential Connectors"){
-                printf("switched");
                 Connector * swap = rightSequential;
                 rightSequential = leftSequential;
                 leftSequential = swap;
-
                 rightSequential->updatePixmapByLocation(Connector::RIGHT);
                 leftSequential->updatePixmapByLocation(Connector::LEFT);
             }
@@ -166,25 +164,7 @@ void CommandBlock::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-/*QVariant CommandBlock::itemChange(GraphicsItemChange change, const QVariant &value)
-{
 
-    if(change == ItemScenePositionHasChanged)
-    {
-
-        changed++;
-        prepareGeometryChange();
-        if(changed < 1)setXY(value.toPoint().x()+ xCoord,value.toPoint().y()+ yCoord);
-        else(setXY(value.toPoint().x(), value.toPoint().y()));
-        setUpConnectors(value.toPoint().x() , value.toPoint().y());
-    }
-
-
-    //}
-    //printf("%d", value.Point);
-
-    return QGraphicsItem::itemChange(change, value);
-}*/
 
 CommandBlock::~CommandBlock(){
 
@@ -193,18 +173,19 @@ CommandBlock::~CommandBlock(){
 Json::Value CommandBlock::toJson()
 {
     Json::Value commandAsJason;
+    Json::Value parameters(Json::arrayValue);
 
 
     for(Connector* currentConnector: connectors)
     {
-        if(currentConnector->getType() != Connector::SEQUNTIAL)
-        {
-
-           commandAsJason[currentConnector->getName()] =  std::stoi(currentConnector->getValue());
+        if(currentConnector->getName().find("Sequential") == std::string::npos )
+         {
+            parameters.append(currentConnector->toJson());
         }
-
     }
-    commandAsJason["Robot Class"] = relativeRobotClass;
+    commandAsJason["Command"] = relativeRobotClass;
+    commandAsJason["ID"] = ID;
+    commandAsJason["Parameters"] = parameters;
 
     return commandAsJason;
 

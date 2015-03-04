@@ -14,14 +14,14 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>SHARP Autonomous Builder</string>
+   <string>SHARP Scriptr</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>20</y>
+      <x>30</x>
+      <y>90</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -41,16 +41,6 @@
     </property>
     <property name="currentIndex">
      <number>-1</number>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="fileNameEditText">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>113</width>
-      <height>27</height>
-     </rect>
     </property>
    </widget>
   </widget>

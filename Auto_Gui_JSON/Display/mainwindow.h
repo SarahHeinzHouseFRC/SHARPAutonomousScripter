@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include "Managers/buildmenu.h"
 #include "settingsdialog.h"
+ #include <QInputDialog>
 
 
 
@@ -30,7 +31,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

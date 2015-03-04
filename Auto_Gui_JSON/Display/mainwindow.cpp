@@ -73,24 +73,28 @@ void MainWindow::updateMenuManager(){
 
 void MainWindow::generate()
 {
+    bool ok;
+    string autoName = QInputDialog::getText(this, tr("Deploy File"),
+                                            tr("Autonomous Name"), QLineEdit::Normal,NULL,&ok).toStdString();
+    if(ok){
+        Json::Value root(Json::objectValue);
+        ofstream out(autonomous.localPath + "/"+ autoName + ".json", ofstream::out);
+        Json::Value commands(Json::arrayValue);
 
-    Json::Value root(Json::objectValue);
-    ofstream out(autonomous.localPath + "/"+ ui->fileNameEditText->text().toStdString(), ofstream::out);
-    Json::Value commands(Json::arrayValue);
+        root["Autonomous Name"] =  autoName;
 
-    root["Autonomous Name"] =  ui->fileNameEditText->text().toStdString();
+        vector<CommandBlock* > orderedCommands = buildView->orderConnections();
 
-    vector<CommandBlock* > orderedCommands = buildView->orderConnections();
+        for(CommandBlock * currentCommand : orderedCommands)
+        {
+            commands.append(currentCommand->toJson());
 
-    for(CommandBlock * currentCommand : orderedCommands)
-    {
-        commands.append(currentCommand->toJson());
+        }
+        root["Commands"] = commands;
 
+        out << root;
+        out.close();
     }
-    root["Commands"] = commands;
-
-    out << root;
-    out.close();
 
 }
 
@@ -166,9 +170,9 @@ void MainWindow::loadAutoFile()
                             currentConnector->setConstantReady();
 
 
-                            if(!value[currentConnector->getName()].isNull()){
+                            if(value["Name"] == currentConnector->getName()){
 
-                                currentConnector->getConstant()->setText(QString::fromStdString(value[currentConnector->getName()].asString()));
+                                currentConnector->getConstant()->setText(QString::fromStdString(value["Value"].asString()));
 
                             }
 

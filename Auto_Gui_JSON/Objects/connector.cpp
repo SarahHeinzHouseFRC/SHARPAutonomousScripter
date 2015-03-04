@@ -12,43 +12,43 @@ Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
     switch(connectorFromJson->location)
     {
 
-        case 1:
-            location = Connector::RIGHT;
-            break;
-        case 2:
-            location = Connector::TOP;
-            break;
-        case 3:
-            location = Connector::LEFT;
-            break;
-        case 4 :
-            location = Connector::BOTTOM;
-            break;
-        default:
-            break;
+    case 1:
+        location = Connector::RIGHT;
+        break;
+    case 2:
+        location = Connector::TOP;
+        break;
+    case 3:
+        location = Connector::LEFT;
+        break;
+    case 4 :
+        location = Connector::BOTTOM;
+        break;
+    default:
+        break;
 
     }
     string arg;
     switch(connectorFromJson->type)
     {
 
-        case 1:
-            type = Connector::INT;
-             arg = "INT";
-            break;
-        case 2:
-            type = Connector::DOUBLE;
-            arg = "DOUBLE";
-            break;
-        case 3:
-            type = Connector::ENUM;
-            arg = "ENUM";
-            break;
-        case 4 :
-            type = Connector::BOOL;
-            break;
-        default:
-            break;
+    case 1:
+        type = Connector::INT;
+        arg = "INT";
+        break;
+    case 2:
+        type = Connector::DOUBLE;
+        arg = "DOUBLE";
+        break;
+    case 3:
+        type = Connector::ENUM;
+        arg = "ENUM";
+        break;
+    case 4 :
+        type = Connector::BOOL;
+        break;
+    default:
+        break;
 
     }
     this->setToolTip(QString::fromStdString(name + " "+ arg));
@@ -79,8 +79,8 @@ Connector::Connector(Type type, Location location)
     }
     else if (location == LEFT && type == SEQUNTIAL)
     {
-            pathToPixmap = ":/Icons/Resources/connectorIn";
-            name = "Left Sequential";
+        pathToPixmap = ":/Icons/Resources/connectorIn";
+        name = "Left Sequential";
 
 
     }
@@ -271,11 +271,12 @@ void Connector::setConstantReady()
 Json::Value Connector::toJson()
 {
     Json::Value value;
+    value["Name"] = name;
 
-    if(constant ==NULL)
-        value[name] = NULL;
+    if(constant == NULL)
+        value["Value"] = "0";
     else
-        value[name] = constant->getValue();
+        value["Value"] = constant->getValue();
 
     return value;
 }

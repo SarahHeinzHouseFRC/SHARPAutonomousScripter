@@ -3,6 +3,7 @@
 
 
 unordered_multimap<int,ScriptedAutonomous::JsonCommandBlock*> ScriptedAutonomous::loadedCommandBlocks;
+unordered_multimap<string,ScriptedAutonomous::JsonCommandBlock*> ScriptedAutonomous::loadedCommandBlocksByName;
 unordered_multimap<string, ScriptedAutonomous::JsonMenuGroup*> ScriptedAutonomous::loadedMenus;
 
 string ScriptedAutonomous::ftpAddress;
@@ -17,13 +18,15 @@ ScriptedAutonomous::ScriptedAutonomous()
 
 }
 void ScriptedAutonomous::loadJsonCommands(){
+
+
+    loadedCommandBlocks.clear();
+    loadedCommandBlocksByName.clear();
+    loadedMenus.clear();
     root.clear();
     Json::Reader reader;
     Json::Value autonomousIn(Json::arrayValue);
-    std::ifstream fileAsString("/home/lucas/Desktop/commands.json", std::ifstream::binary);
-
-
-
+    std::ifstream fileAsString(pathToCommandsFile, std::ifstream::binary);
 
     bool suc = reader.parse(fileAsString,root);
 
@@ -57,9 +60,14 @@ void ScriptedAutonomous::loadJsonCommands(){
 
         }
         ScriptedAutonomous::loadedCommandBlocks.insert(std::make_pair<int, JsonCommandBlock*>(int(commandBlock->ID),dynamic_cast<JsonCommandBlock*>(commandBlock)));
+        ScriptedAutonomous::loadedCommandBlocksByName.insert(std::make_pair<string, JsonCommandBlock*>(string(commandBlock->relativeRobotClass),dynamic_cast<JsonCommandBlock*>(commandBlock)));
       }
 
     //Load Menues
+
+    root.clear();
+    std::ifstream menufileAsString(pathToMenusFile, std::ifstream::binary);
+    reader.parse(menufileAsString,root);
 
     autonomousIn = root["Menus"];
 
@@ -74,10 +82,8 @@ void ScriptedAutonomous::loadJsonCommands(){
         loadedMenus.insert(std::make_pair<string, JsonMenuGroup*>(string(menu->name),dynamic_cast<JsonMenuGroup*>(menu)));
 
     }
-
     //setSettings();
     loadJsonPreferences();
-
 }
 
 void ScriptedAutonomous::loadJsonPreferences(){
@@ -100,16 +106,65 @@ void ScriptedAutonomous::setSettings(){
 
     Json::Reader reader;
 
+    ofstream out ("/home/lucas/Desktop/settings.json");
     std::ifstream fileAsString("/home/lucas/Desktop/settings.json", std::ifstream::binary);
     root.clear();
+
+    out << root;
+    out.close();
+
 
     bool suc = reader.parse(fileAsString,root);
 
     root["FTP Address"] =  ScriptedAutonomous::ftpAddress;
     root["Local Path"] =  ScriptedAutonomous::localPath;
     root["USB Path"] = ScriptedAutonomous::usbPath;
-    ofstream out ("/home/lucas/Desktop/settings.json");
+
 
     out << root;
     out.close();
+}
+
+void ScriptedAutonomous::exportCommands()
+{
+
+    ofstream out("/home/lucas/Desktop/commands.json", ofstream::out);
+
+
+    typedef unordered_multimap<int, ScriptedAutonomous::JsonCommandBlock*>::iterator it;
+    Json::Value root;
+    Json::Value commandsToExport(Json::arrayValue);
+    for(it iterator= loadedCommandBlocks.begin(); iterator != loadedCommandBlocks.end(); iterator++)
+    {
+        JsonCommandBlock *commandBlock = iterator->second;
+        Json::Value commandToExport;
+
+        commandToExport["ID"] = commandBlock->ID;
+        commandToExport["Robot Class"] = commandBlock->relativeRobotClass;
+        commandToExport["Path To Pixmap"] = commandBlock->pathToPixmap;
+
+        Json::Value parameters(Json::arrayValue);
+
+        for(JsonConnector* connector : *commandBlock->connectors)
+        {
+            Json::Value parameter;
+            parameter["Name"] = connector->name;
+            parameter["Location"] = connector->location;
+            parameter["Type"] = connector->type;
+            parameter["Path To Pixmap"] = connector->pathToPixmap;
+
+           parameters.append(parameter);
+        }
+        commandToExport["Connectors"] = parameters;
+        commandsToExport.append(commandToExport);
+    }
+    root["Commands"] = commandsToExport;
+    out << root;
+    out.close();
+
+
+}
+
+void ScriptedAutonomous::reloadCommands()
+{
 }

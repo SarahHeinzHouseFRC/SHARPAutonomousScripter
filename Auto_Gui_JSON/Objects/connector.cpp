@@ -2,11 +2,12 @@
 #include <QMenu>
 #include <QToolTip>
 
-Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
+Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson, AutonomousGuiObject* parent)
 {
 
     Location location;
     Type type;
+    this->setParentItem(parent);
     name = connectorFromJson->name;
 
     switch(connectorFromJson->location)
@@ -46,6 +47,7 @@ Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
         break;
     case 4 :
         type = Connector::BOOL;
+         arg = "BOOL";
         break;
     default:
         break;
@@ -68,8 +70,9 @@ Connector::Connector(ScriptedAutonomous::JsonConnector* connectorFromJson)
 
 }
 
-Connector::Connector(Type type, Location location)
+Connector::Connector(Type type, Location location, AutonomousGuiObject *parent)
 {
+    this->setParentItem(parent);
     this->type = type;
     this->location = location;
     if(type == SEQUNTIAL && location == RIGHT)
@@ -274,9 +277,26 @@ Json::Value Connector::toJson()
     value["Name"] = name;
 
     if(constant == NULL)
-        value["Value"] = "0";
-    else
-        value["Value"] = constant->getValue();
+        value["Value"] = 0;
+    else{
+        switch(type)
+        {
+        case INT:
+            value["Value"] = std::stoi(constant->getValue());
+            break;
+        case ENUM:
+            value["Value"] = std::stoi(constant->getValue());
+            break;
+        case DOUBLE:
+            value["Value"] = std::stod(constant->getValue());
+            break;
+        case BOOL:
+            value["Value"] = std::stoi(constant->getValue()) != 0;
+            break;
+        }
+
+    }
+
 
     return value;
 }
@@ -297,6 +317,9 @@ void Connector::createConstant()
     case LEFT:
         constantLocation = Constant::LEFT;
         break;
+    case BOTTOM:
+        constantLocation = Constant::BOTTOM;
+        break;
     }
 
     switch(type){
@@ -310,7 +333,9 @@ void Connector::createConstant()
     case ENUM:
         this->constant = new Constant(this,Constant::STATE ,constantLocation);
         break;
-
+    case BOOL:
+        this->constant = new Constant(this,Constant::BOOL ,constantLocation);
+        break;
     }
 
 

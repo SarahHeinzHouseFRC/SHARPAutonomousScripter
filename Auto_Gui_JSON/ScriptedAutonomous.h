@@ -36,6 +36,8 @@ public:
     void loadJsonCommands();
     void loadJsonPreferences();
     void setSettings();
+    void exportCommands();
+    void reloadCommands();
 
 
     enum CommandType{
@@ -54,6 +56,9 @@ public:
         NAVX
     };
     static unordered_multimap<int,JsonCommandBlock*> loadedCommandBlocks;
+
+    static unordered_multimap<string,JsonCommandBlock*> loadedCommandBlocksByName;
+
     static unordered_multimap<string, JsonMenuGroup*> loadedMenus;
     static string ftpAddress;
     static string localPath;
@@ -61,6 +66,8 @@ public:
 
 private:
      Json::Value root;
+     string pathToCommandsFile = "/home/lucas/Desktop/commands.json";
+     string pathToMenusFile = "/home/lucas/Desktop/menus.json";
 
 };
 

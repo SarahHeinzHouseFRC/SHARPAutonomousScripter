@@ -29,8 +29,8 @@ public:
         ENUM
     };
 
-    Connector(ScriptedAutonomous::JsonConnector* connectorFromJson);
-    Connector(Type,Location);
+    Connector(ScriptedAutonomous::JsonConnector* connectorFromJson, AutonomousGuiObject *parent);
+    Connector(Type,Location,AutonomousGuiObject *parent);
     string getName();
     string getValue();
     Connector::Location getLocation();
@@ -53,7 +53,6 @@ public:
     void setConnectionDeleted();
 
 private:
-    //AutonomousGuiObject parent;
     string pathToPixmap;
     string value;
     Connector::Location location;
@@ -67,7 +66,7 @@ private:
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 
 };
 

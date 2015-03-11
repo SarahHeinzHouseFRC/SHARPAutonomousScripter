@@ -11,8 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    autonomous.loadJsonCommands();
-
     ui->setupUi(this);
     buildView = new BuildCanvas(this, &menuManagerMain);
     buildScene = new QGraphicsScene(buildView);
@@ -24,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loadGuiElelements();
 
-    connect(ui->menuDeploy->actions().at(0), SIGNAL(triggered()),this,SLOT(generate()));
+    connect(ui->menuDeploy->actions().at(0), SIGNAL(triggered()),this,SLOT(generateLocal()));
+    connect(ui->menuDeploy->actions().at(1), SIGNAL(triggered()),this,SLOT(generateUSB()));
     connect(ui->menuFile->actions().at(0), SIGNAL(triggered()),this,SLOT(loadAutoFile()));
     connect(ui->menuDeploy->actions().at(4), SIGNAL(triggered()),this,SLOT(openSettingsMenu()));
 }
@@ -71,7 +70,7 @@ void MainWindow::updateMenuManager(){
     buildView->updateCanvas();
 }
 
-void MainWindow::generate()
+void MainWindow::generateLocal()
 {
     bool ok;
     string autoName = QInputDialog::getText(this, tr("Deploy File"),
@@ -79,6 +78,32 @@ void MainWindow::generate()
     if(ok){
         Json::Value root(Json::objectValue);
         ofstream out(autonomous.localPath + "/"+ autoName + ".json", ofstream::out);
+        Json::Value commands(Json::arrayValue);
+
+        root["Autonomous Name"] =  autoName;
+
+        vector<CommandBlock* > orderedCommands = buildView->orderConnections();
+
+        for(CommandBlock * currentCommand : orderedCommands)
+        {
+            commands.append(currentCommand->toJson());
+
+        }
+        root["Commands"] = commands;
+
+        out << root;
+        out.close();
+    }
+
+}
+void MainWindow::generateUSB()
+{
+    bool ok;
+    string autoName = QInputDialog::getText(this, tr("Deploy File"),
+                                            tr("Autonomous Name"), QLineEdit::Normal,NULL,&ok).toStdString();
+    if(ok){
+        Json::Value root(Json::objectValue);
+        ofstream out(autonomous.usbPath + "/"+ autoName + ".json", ofstream::out);
         Json::Value commands(Json::arrayValue);
 
         root["Autonomous Name"] =  autoName;
@@ -171,8 +196,16 @@ void MainWindow::loadAutoFile()
 
 
                             if(value["Name"] == currentConnector->getName()){
-
-                                currentConnector->getConstant()->setText(QString::fromStdString(value["Value"].asString()));
+                                if(value["Value"].isBool())
+                                {
+                                    if(value["Value"].asBool())
+                                        currentConnector->getConstant()->setText("T");
+                                    else
+                                        currentConnector->getConstant()->setText("F");
+                                }else if(value["Value"].isDouble())
+                                    currentConnector->getConstant()->setText(QString::fromStdString(to_string(value["Value"].asDouble())));
+                                else if(value["Value"].isInt())
+                                    currentConnector->getConstant()->setText(QString::fromStdString(to_string(value["Value"].asInt())));
 
                             }
 

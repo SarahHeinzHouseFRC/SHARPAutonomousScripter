@@ -35,7 +35,8 @@ void BuildCanvas::mouseReleaseEvent(QMouseEvent *event)
 
     if(selectedConnectors.size() == 2 ){
         printf("New Connection Made \n");
-        if(selectedConnectors.at(0)->getType() == Connector::SEQUNTIAL && selectedConnectors.at(1)->getType() == Connector::SEQUNTIAL){
+        if(selectedConnectors.at(0)->getType() == Connector::SEQUNTIAL && selectedConnectors.at(1)->getType() == Connector::SEQUNTIAL
+                && selectedConnectors.at(0)->parentItem() != selectedConnectors.at(1)->parentItem()){
             activeConnections.push_back(new Connection(selectedConnectors.at(0),
                                                        selectedConnectors.at(1)));
             selectedConnectors.at(0)->setInConnection();
@@ -114,6 +115,11 @@ void BuildCanvas::updateCanvas(){
             case Connector::LEFT:
                 graphic = scene()->addLine(currentConnector->getX(), currentConnector->getY()+6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width(),
                                            currentConnector->getConstant()->y() + currentConnector->getConstant()->height()/2);
+                break;
+
+            case Connector::BOTTOM:
+                graphic = scene()->addLine(currentConnector->getX()+6, currentConnector->getY() + 6, currentConnector->getConstant()->x() + currentConnector->getConstant()->width()/2,
+                                           currentConnector->getConstant()->y() - currentConnector->getConstant()->height()+25);
                 break;
             }
 

@@ -2,7 +2,7 @@
 
 
 CommandBlock::CommandBlock(ScriptedAutonomous::JsonCommandBlock* commandFromJson): AutonomousGuiObject(){
- // setFlags(ItemIsMovable | ItemSendsScenePositionChanges);
+    // setFlags(ItemIsMovable | ItemSendsScenePositionChanges);
 
 
     this->ID = commandFromJson->ID;
@@ -12,11 +12,11 @@ CommandBlock::CommandBlock(ScriptedAutonomous::JsonCommandBlock* commandFromJson
 
     for(ScriptedAutonomous::JsonConnector* currentConnector: *commandFromJson->connectors)
     {
-        connectors.push_back(new Connector(currentConnector));
+        connectors.push_back(new Connector(currentConnector,this));
     }
     if(ID !=0)
-        connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::LEFT));
-    connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::RIGHT));
+        connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::LEFT, this));
+    connectors.push_back(new Connector(Connector::SEQUNTIAL,Connector::RIGHT, this));
 
     printf("%d", connectors.size());
 
@@ -58,6 +58,8 @@ void CommandBlock::setUpConnectors(int x, int y)
             break;
         case Connector::BOTTOM:
             b++;
+            currentConnector->setParentItem(this);
+            currentConnector->setXY(x+36*(t),y+46);
 
             break;
         case Connector::LEFT:
@@ -179,7 +181,7 @@ Json::Value CommandBlock::toJson()
     for(Connector* currentConnector: connectors)
     {
         if(currentConnector->getName().find("Sequential") == std::string::npos )
-         {
+        {
             parameters.append(currentConnector->toJson());
         }
     }

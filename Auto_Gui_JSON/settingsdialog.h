@@ -4,6 +4,9 @@
 #include <QDialog>
 #include "ScriptedAutonomous.h"
 #include <QFileDialog>
+#include <QListWidgetItem>
+#include <jsoncpp/json/json.h>
+
 
 namespace Ui {
 class SettingsDialog;
@@ -12,11 +15,11 @@ class SettingsDialog;
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
-    
+
 private slots:
     void on_buttonBox_accepted();
 
@@ -26,6 +29,16 @@ private slots:
 
     void on_localPushButton_clicked();
 
+    void on_menuList_itemSelectionChanged();
+
+    void on_loadedMenus_itemSelectionChanged();
+
+    void on_menuCommands_itemSelectionChanged();
+
+    void on_loadedMenus_itemClicked(QListWidgetItem *item);
+
+    void on_saveButtonRobotClass_clicked();
+
 private:
     Ui::SettingsDialog *ui;
     ScriptedAutonomous autonomous;
@@ -34,6 +47,11 @@ private:
     string newUSBPath;
     string newLocalPath;
     string newFTPAddress;
+    QList<QString> menuString;
+    QList<QString> loadedMenus;
+    void loadMenus();
+    void loadCommands();
+
 
 };
 

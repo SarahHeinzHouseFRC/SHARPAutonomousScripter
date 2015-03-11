@@ -63,7 +63,8 @@ private slots:
     void on_clearButton_released();
     void updateMenuManager();
     void loadAutoFile();
-    void generate();
+    void generateLocal();
+    void generateUSB();
     void openSettingsMenu();
 
 };

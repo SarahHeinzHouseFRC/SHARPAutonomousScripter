@@ -14,14 +14,14 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>SHARP Scriptr</string>
+   <string>SHARP Scripter</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>90</y>
+      <x>10</x>
+      <y>20</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -33,9 +33,9 @@
    <widget class="QTabWidget" name="toolBox">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>100</x>
       <y>10</y>
-      <width>651</width>
+      <width>791</width>
       <height>111</height>
      </rect>
     </property>
@@ -109,6 +109,10 @@
    </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Resources/scripterIcon.png</normaloff>:/Icons/Resources/scripterIcon.png</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
@@ -120,6 +124,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

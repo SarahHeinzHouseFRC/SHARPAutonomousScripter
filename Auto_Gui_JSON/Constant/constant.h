@@ -8,11 +8,13 @@ public:
     enum Type{
         INT,
         DOUBLE,
-        STATE
+        STATE,
+        BOOL
     };
     enum Location{
         TOP,
-        LEFT
+        LEFT,
+        BOTTOM
     };
 
     Constant(AutonomousGuiObject *parent, Type type, Location location);
@@ -25,6 +27,9 @@ public:
 private:
     QGraphicsLineItem * line;
     Type type;
+    std::string value;
+protected:
+    void mousePressEvent(QMouseEvent *e);
 };
 
 #endif // CONSTANT_H

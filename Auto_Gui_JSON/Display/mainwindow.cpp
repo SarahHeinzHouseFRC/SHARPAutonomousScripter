@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     buildView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     buildView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    loadGuiElelements();
+    loadToolBox();
 
     connect(ui->menuDeploy->actions().at(0), SIGNAL(triggered()),this,SLOT(generateLocal()));
     connect(ui->menuDeploy->actions().at(1), SIGNAL(triggered()),this,SLOT(generateUSB()));
@@ -33,10 +33,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::loadGuiElelements()
+void MainWindow::loadToolBox()
 {
 
-
+    ui->toolBox->clear();
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateMenuManager()));
     timer->start(10);
@@ -58,13 +58,14 @@ void MainWindow::resizeEvent(QResizeEvent * event)
     buildView->setSceneRect(10,150,geometry().width() -20 ,geometry().height() - ui->toolBox->geometry().height() - 50);
     QWidget::resizeEvent(event);
 }
-
-void MainWindow::on_graphicsView_destroyed()
-
-{
-
-}
 void MainWindow::updateMenuManager(){
+
+    if(autonomous.needsUpdated())
+    {
+        autonomous.loadJsonCommands();
+        autonomous.loadJsonPreferences();
+        loadToolBox();
+    }
     timer->start(100);
     menuManagerMain.updateSelectedItem();
     buildView->updateCanvas();

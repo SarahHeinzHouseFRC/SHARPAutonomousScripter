@@ -9,6 +9,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     menuString.push_back("Deploy");
     menuString.push_back("Commands");
     ui->menuList->addItems(menuString);
+    ui->selectedObjectStackedWidget->setCurrentIndex(2);
 
     loadMenus();
 
@@ -38,6 +39,8 @@ void SettingsDialog::on_buttonBox_accepted()
     }
 
     autonomous.setSettings();
+    autonomous.exportCommands();;
+    autonomous.exportMenus();
     close();
 }
 
@@ -88,6 +91,9 @@ void SettingsDialog::loadSettings()
 void SettingsDialog::loadMenus()
 {
 
+    ui->loadedMenus->clear();
+    loadedMenus.clear();
+
     typedef unordered_multimap<string, ScriptedAutonomous::JsonMenuGroup*>::iterator it;
     for(it iterator= autonomous.loadedMenus.begin(); iterator != autonomous.loadedMenus.end(); iterator++)
     {
@@ -98,10 +104,14 @@ void SettingsDialog::loadMenus()
 
 void SettingsDialog::loadCommands()
 {
-    ui->menuNameEdit->setText(ui->loadedMenus->selectedItems().at(0)->text());
-    ui->selectedObjectStackedWidget->setCurrentIndex(0);
 
     ui->menuCommands->clear();
+
+    ui->selectedObjectStackedWidget->setCurrentIndex(0);
+    if(ui->loadedMenus->selectedItems().size() != 0){
+        ui->menuNameEdit->setText(ui->loadedMenus->selectedItems().at(0)->text());
+
+
 
     QList<QString> commands;
 
@@ -114,10 +124,8 @@ void SettingsDialog::loadCommands()
     }
     ui->menuCommands->addItems(commands);
 
-commands.clear();
-
-
-
+    commands.clear();
+    }
 }
 
 void SettingsDialog::on_menuList_itemSelectionChanged()
@@ -134,29 +142,11 @@ void SettingsDialog::on_menuList_itemSelectionChanged()
 void SettingsDialog::on_loadedMenus_itemSelectionChanged()
 {
 
-        ui->menuNameEdit->setText(ui->loadedMenus->selectedItems().at(0)->text());
-        ui->selectedObjectStackedWidget->setCurrentIndex(0);
-
-        ui->menuCommands->clear();
-
-        QList<QString> commands;
-
-        QString name = ui->loadedMenus->selectedItems().at(0)->text();
-
-        for(int id: *autonomous.loadedMenus.find(name.toStdString())->second->menuGroupIDs){
-
-            commands.push_back(QString::fromStdString(autonomous.loadedCommandBlocks.find(id)->second->relativeRobotClass));
-
-        }
-        ui->menuCommands->addItems(commands);
-
-    commands.clear();
-
+    loadCommands();
 }
 
 void SettingsDialog::on_menuCommands_itemSelectionChanged()
 {
-
     string name;
     QPixmap pixmap;
     if(ui->menuCommands->selectedItems().size() !=0){
@@ -176,6 +166,7 @@ void SettingsDialog::on_menuCommands_itemSelectionChanged()
 void SettingsDialog::on_loadedMenus_itemClicked(QListWidgetItem *item)
 {
     ui->selectedObjectStackedWidget->setCurrentIndex(0);
+    printf("%d",ui->menuList->selectedItems().size() != 0);
 }
 
 void SettingsDialog::on_saveButtonRobotClass_clicked()
@@ -188,8 +179,30 @@ void SettingsDialog::on_saveButtonRobotClass_clicked()
 
     //Reload Changes Made To A Command
 
-       autonomous.exportCommands();
-       autonomous.loadJsonCommands();
+    autonomous.exportCommands();
+    autonomous.loadJsonCommands();
 
-       loadCommands();
+    loadCommands();
+}
+
+
+void SettingsDialog::on_addRemoveMenuItemsButton_clicked()
+{
+    ItemManipulatorDialog * manipDio = new ItemManipulatorDialog(this, ui->loadedMenus->selectedItems().at(0)->text().toStdString());
+    manipDio->show();
+}
+
+void SettingsDialog::on_addMenuToProgram_clicked()
+{
+    bool ok;
+    string autoName = QInputDialog::getText(this, tr("Deploy File"),
+                                            tr("Autonomous Name"), QLineEdit::Normal,NULL,&ok).toStdString();
+    if(ok)
+    {
+        ScriptedAutonomous::JsonMenuGroup *menu = new ScriptedAutonomous::JsonMenuGroup;
+        menu->name = autoName;
+        autonomous.loadedMenus.insert(std::make_pair<std::string,ScriptedAutonomous::JsonMenuGroup*>((string)autoName, dynamic_cast<ScriptedAutonomous::JsonMenuGroup*>(menu)));
+    }
+
+    loadMenus();
 }

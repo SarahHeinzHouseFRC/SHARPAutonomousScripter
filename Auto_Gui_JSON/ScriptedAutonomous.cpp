@@ -9,16 +9,19 @@ unordered_multimap<string, ScriptedAutonomous::JsonMenuGroup*> ScriptedAutonomou
 string ScriptedAutonomous::ftpAddress;
 string ScriptedAutonomous::localPath;
 string ScriptedAutonomous::usbPath;
+bool ScriptedAutonomous::needsUpdate;
 
 
 ScriptedAutonomous::ScriptedAutonomous()
 {
 
+    needsUpdate = false;
 
 
 }
 void ScriptedAutonomous::loadJsonCommands(){
 
+    needsUpdate = false;
 
     loadedCommandBlocks.clear();
     loadedCommandBlocksByName.clear();
@@ -36,9 +39,9 @@ void ScriptedAutonomous::loadJsonCommands(){
 
     }
 
-     autonomousIn= root["Commands"];
+    autonomousIn= root["Commands"];
 
-     //Load Commands
+    //Load Commands
 
     for(Json::Value currentCommand: autonomousIn){
         JsonCommandBlock* commandBlock = new JsonCommandBlock();
@@ -61,7 +64,7 @@ void ScriptedAutonomous::loadJsonCommands(){
         }
         ScriptedAutonomous::loadedCommandBlocks.insert(std::make_pair<int, JsonCommandBlock*>(int(commandBlock->ID),dynamic_cast<JsonCommandBlock*>(commandBlock)));
         ScriptedAutonomous::loadedCommandBlocksByName.insert(std::make_pair<string, JsonCommandBlock*>(string(commandBlock->relativeRobotClass),dynamic_cast<JsonCommandBlock*>(commandBlock)));
-      }
+    }
 
     //Load Menues
 
@@ -131,9 +134,10 @@ void ScriptedAutonomous::exportCommands()
     ofstream out("/home/lucas/Desktop/commands.json", ofstream::out);
 
 
-    typedef unordered_multimap<int, ScriptedAutonomous::JsonCommandBlock*>::iterator it;
+
     Json::Value root;
     Json::Value commandsToExport(Json::arrayValue);
+    typedef unordered_multimap<int, ScriptedAutonomous::JsonCommandBlock*>::iterator it;
     for(it iterator= loadedCommandBlocks.begin(); iterator != loadedCommandBlocks.end(); iterator++)
     {
         JsonCommandBlock *commandBlock = iterator->second;
@@ -153,7 +157,7 @@ void ScriptedAutonomous::exportCommands()
             parameter["Type"] = connector->type;
             parameter["Path To Pixmap"] = connector->pathToPixmap;
 
-           parameters.append(parameter);
+            parameters.append(parameter);
         }
         commandToExport["Connectors"] = parameters;
         commandsToExport.append(commandToExport);
@@ -165,6 +169,43 @@ void ScriptedAutonomous::exportCommands()
 
 }
 
-void ScriptedAutonomous::reloadCommands()
+void ScriptedAutonomous::updateItemChanges()
 {
+    needsUpdate = true;
+}
+
+void ScriptedAutonomous::exportMenus()
+{
+    ofstream out("/home/lucas/Desktop/menus.json", ofstream::out);
+
+    Json::Value root;
+    Json::Value menuToExport;
+     Json::Value menus;
+
+    typedef unordered_multimap<string, ScriptedAutonomous::JsonMenuGroup*>::iterator it;
+    for(it iterator= loadedMenus.begin(); iterator != loadedMenus.end(); iterator++)
+    {
+        JsonMenuGroup *menu = iterator->second;
+        menuToExport["Name"] = menu->name;
+        Json::Value children(Json::arrayValue);
+
+        for(int ID : *menu->menuGroupIDs)
+        {
+            Json::Value child;
+            child["ID"] = ID;
+            children.append(child);
+        }
+        menuToExport["Children"] = children;
+        menus.append(menuToExport);
+    }
+    root["Menus"] = menus;
+    out << root;
+    out.close();
+
+    needsUpdate = true;
+}
+
+bool ScriptedAutonomous::needsUpdated()
+{
+    return needsUpdate;
 }

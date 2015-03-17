@@ -59,10 +59,10 @@ protected:
     void resizeEvent(QResizeEvent *);
 
 private slots:
-    void on_graphicsView_destroyed();
     void on_clearButton_released();
     void updateMenuManager();
     void loadAutoFile();
+    void loadToolBox();
     void generateLocal();
     void generateUSB();
     void openSettingsMenu();

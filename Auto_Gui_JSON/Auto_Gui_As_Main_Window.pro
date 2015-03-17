@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     Objects/autonomousguiobject.cpp \
     ScriptedAutonomous.cpp \
     Managers/buildmenu.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    Display/itemmanipulatordialog.cpp
 
 HEADERS  += \
     Constant/enumeratedconstant.h \
@@ -42,10 +43,12 @@ HEADERS  += \
     Objects/autonomousguiobject.h \
     ScriptedAutonomous.h \
     Managers/buildmenu.h \
-    settingsdialog.h
+    settingsdialog.h \
+    Display/itemmanipulatordialog.h
 
 FORMS    += mainwindow.ui \
-    settingsdialog.ui
+    settingsdialog.ui \
+    Display/itemmanipulatordialog.ui
 
 RESOURCES += \
     Resources.qrc \

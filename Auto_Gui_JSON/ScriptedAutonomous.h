@@ -38,6 +38,12 @@ public:
     void setSettings();
     void exportCommands();
     void reloadCommands();
+    void updateItemChanges();
+    void exportMenus();
+    void loadMenus();
+
+    bool needsUpdated();
+
 
 
     enum CommandType{
@@ -64,10 +70,14 @@ public:
     static string localPath;
     static string usbPath;
 
+
+
+
 private:
      Json::Value root;
      string pathToCommandsFile = "/home/lucas/Desktop/commands.json";
      string pathToMenusFile = "/home/lucas/Desktop/menus.json";
+     static bool needsUpdate;
 
 };
 

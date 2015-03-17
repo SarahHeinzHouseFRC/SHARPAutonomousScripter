@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <QListWidgetItem>
 #include <jsoncpp/json/json.h>
+#include "Display/itemmanipulatordialog.h"
+#include <QInputDialog>
 
 
 namespace Ui {
@@ -38,6 +40,10 @@ private slots:
     void on_loadedMenus_itemClicked(QListWidgetItem *item);
 
     void on_saveButtonRobotClass_clicked();
+
+    void on_addRemoveMenuItemsButton_clicked();
+
+    void on_addMenuToProgram_clicked();
 
 private:
     Ui::SettingsDialog *ui;

@@ -20,8 +20,10 @@
 #include "ScriptedAutonomous.h"
 #include <QMainWindow>
 #include "Managers/buildmenu.h"
-#include "settingsdialog.h"
- #include <QInputDialog>
+#include "Display/settingsdialog.h"
+#include <QInputDialog>
+#include <jsoncpp/json/autolink.h>
+#include<jsoncpp/json/json.h>
 
 
 
@@ -52,7 +54,6 @@ private:
     QTimer *timer;
     vector<vector<Connector*> > connections;
     void loadGuiElelements();
-    string keys[9] = {"ID","Command Timeout","Drive Speed","Elevator Speed","Time Out", "Drive Distance", "Elevator Position","Degree to Rotate","Zero Gyro"};
     ScriptedAutonomous autonomous;
     SettingsDialog settingsDialog;
 protected:

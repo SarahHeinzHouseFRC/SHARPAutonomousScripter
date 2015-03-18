@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <jsoncpp/json/autolink.h>
-#include<jsoncpp/json/json.h>
+
 
 
 
